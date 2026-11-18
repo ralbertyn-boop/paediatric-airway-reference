@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Paediatric Airway Quick Reference</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#005eb8">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Paeds Airway">
+<style>
+:root{
+  --bg:#f4f6f9; --card:#fff; --ink:#111827; --muted:#5b6474; --line:#d9dee7;
+  --accent:#005eb8; --accent-ink:#fff; --hi:#fff4c2; --hi-line:#e0b400;
+  --warn-bg:#fdecec; --warn-ink:#8a1111; --ok:#127a3e;
+  --g35:#d9dbb0; --g5:#c8c9e6; --g55:#6f6f6f; --g65:#e08a1e; --g7:#ffffff; --g8:#127a3e;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#0d1117; --card:#161b22; --ink:#e8edf3; --muted:#9aa6b5; --line:#2b333f;
+    --accent:#3b8eea; --hi:#3a3110; --hi-line:#c9a227; --warn-bg:#3a1414; --warn-ink:#ffb4b4; --ok:#4cc67e; }
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-text-size-adjust:100%}
+header{position:sticky;top:0;z-index:20;background:var(--accent);color:var(--accent-ink);box-shadow:0 2px 6px rgba(0,0,0,.2)}
+header h1{margin:0;font-size:17px;padding:10px 14px 4px;font-weight:700}
+nav{display:flex;overflow-x:auto}
+nav a{flex:1;min-width:84px;text-align:center;padding:10px 6px 12px;color:var(--accent-ink);text-decoration:none;font-weight:600;font-size:15px;opacity:.75;border-bottom:3px solid transparent}
+nav a.on{opacity:1;border-bottom-color:#fff}
+main{max-width:980px;margin:0 auto;padding:12px 12px 40px}
+.view{display:none}.view.on{display:block}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;margin:0 0 12px}
+.card h2{margin:0 0 8px;font-size:15px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+.banner{background:var(--warn-bg);color:var(--warn-ink);font-weight:700;border-radius:10px;padding:10px 12px;margin:0 0 12px;text-align:center}
+.seg{display:flex;border:2px solid var(--accent);border-radius:10px;overflow:hidden;margin-bottom:10px}
+.seg button{flex:1;border:0;background:transparent;color:var(--ink);padding:12px 6px;font-size:16px;font-weight:700}
+.seg button.on{background:var(--accent);color:var(--accent-ink)}
+.lbl{font-size:13px;font-weight:700;color:var(--muted);margin:8px 0 6px;text-transform:uppercase;letter-spacing:.04em}
+.chips{display:grid;grid-template-columns:repeat(auto-fill,minmax(58px,1fr));gap:6px}
+.chips button{min-height:48px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;font-size:17px;font-weight:700}
+.chips button small{display:block;font-size:11px;font-weight:600;color:var(--muted)}
+.chips button.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.chips button.on small{color:var(--accent-ink)}
+.results{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.res{border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:var(--card)}
+.res .k{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.03em}
+.res .v{font-size:24px;font-weight:800;line-height:1.15;margin-top:2px}
+.res .n{font-size:12px;color:var(--muted);margin-top:2px}
+.res.big{grid-column:1/-1}
+.res.big .v{font-size:30px}
+.swatch{display:inline-block;width:18px;height:18px;border-radius:4px;border:1px solid #888;vertical-align:-2px;margin-right:6px}
+.empty{color:var(--muted);font-style:italic;padding:6px 0}
+.note{font-size:13px;color:var(--muted);margin-top:8px}
+.note b{color:var(--ink)}
+.star{color:var(--warn-ink);font-weight:700}
+.tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;min-width:560px;font-size:14px;background:var(--card)}
+th,td{border:1px solid var(--line);padding:6px 6px;text-align:center;vertical-align:middle}
+th{background:var(--accent);color:var(--accent-ink);font-size:12.5px;position:sticky;top:0}
+td.rowkey{font-weight:800}
+tr.hi td.rowkey,td.hi{background:var(--hi);box-shadow:inset 0 0 0 2px var(--hi-line)}
+.check-sec{border-left:6px solid var(--c);}
+.check-sec h2{color:var(--c)}
+.check-item{display:flex;gap:10px;align-items:flex-start;padding:9px 4px;border-top:1px solid var(--line);cursor:pointer;user-select:none}
+.check-item:first-of-type{border-top:0}
+.check-item input{width:24px;height:24px;flex:0 0 24px;margin:0;accent-color:var(--ok)}
+.check-item .t{font-weight:600}
+.check-item .s{font-size:13.5px;color:var(--muted);margin-top:2px}
+.check-item.done .t{text-decoration:line-through;color:var(--muted)}
+.progress{position:sticky;top:86px;z-index:10;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 12px;margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.bar{flex:1;height:10px;border-radius:6px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--ok);width:0}
+.btn{border:1.5px solid var(--accent);background:transparent;color:var(--accent);border-radius:9px;padding:8px 12px;font-weight:700;font-size:14px}
+.btn.solid{background:var(--accent);color:var(--accent-ink)}
+.cols{display:grid;grid-template-columns:1fr;gap:12px}
+@media(min-width:760px){.cols{grid-template-columns:1fr 1fr}}
+.vent dt{font-weight:800;margin-top:10px}
+.vent dd{margin:4px 0 0 0}
+.vent li.match{font-weight:800;background:var(--hi);border-radius:6px;padding:0 4px}
+footer{font-size:12px;color:var(--muted);text-align:center;padding:10px 14px 30px;max-width:980px;margin:0 auto}
+#modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:50;padding:20px}
+#modal.on{display:flex}
+#modal .box{background:var(--card);border-radius:12px;padding:16px;max-width:360px;width:100%}
+#modal .row{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}
+</style>
+</head>
+<body>
+<header>
+  <h1>Paediatric Airway Quick Reference</h1>
+  <nav id="nav">
+    <a href="#lookup" data-v="lookup">Lookup</a>
+    <a href="#tables" data-v="tables">Tables</a>
+    <a href="#checklist" data-v="checklist">Checklist</a>
+    <a href="#vent" data-v="vent">Ventilator</a>
+  </nav>
+</header>
+
+<main>
+  <div class="banner">ALWAYS HAVE ONE LARGER AND ONE SMALLER AVAILABLE</div>
+
+  <!-- LOOKUP -->
+  <section class="view" id="v-lookup">
+    <div class="card">
+      <div class="seg" id="mode">
+        <button data-m="infant" class="on">Under 1 year</button>
+        <button data-m="child">1 year and over</button>
+      </div>
+      <div id="ageBlock" hidden>
+        <div class="lbl">Age (years), for ETT size</div>
+        <div class="chips" id="ageChips"></div>
+      </div>
+      <div class="lbl" id="wtLbl">Weight (kg)</div>
+      <div class="chips" id="wtChips"></div>
+      <div class="note" id="modeNote">ETT size is by <b>weight</b> for under 1 year and by <b>age</b> for 1 year and over. The airway devices in Table 1 are always sized by weight.</div>
+    </div>
+
+    <div class="card">
+      <h2>Endotracheal tube</h2>
+      <div id="ettOut"><div class="empty">Select a weight or age.</div></div>
+    </div>
+
+    <div class="card">
+      <h2>Airway devices</h2>
+      <div id="devOut"><div class="empty">Select a weight.</div></div>
+    </div>
+
+    <div class="card">
+      <h2>Accessories for ETT internal diameter</h2>
+      <div class="chips" id="idChips"></div>
+      <div id="accOut" style="margin-top:10px"><div class="empty">Pick an ETT ID (pre-selected from the ETT size above).</div></div>
+    </div>
+
+    <div class="card">
+      <h2>Intubating through a 1st-generation disposable LMA</h2>
+      <div id="lmaOut"></div>
+    </div>
+
+    <div class="card">
+      <h2>Ventilator starting point</h2>
+      <div id="ventOut"><div class="empty">Select a weight.</div></div>
+    </div>
+  </section>
+
+  <!-- TABLES -->
+  <section class="view" id="v-tables">
+    <div class="card"><h2>Table 1: Airway devices</h2><div class="tablewrap" id="t1"></div>
+      <div class="note">Air-Q value in brackets = max size uncuffed ETT that passes through it. Where two sizes are shown (e.g. "3.5 / 5"), both appear for that weight on the sheet.</div></div>
+    <div class="card"><h2>Table 2: ET tubes (&lt;1y size on weight, &gt;1y size on age)</h2><div class="tablewrap" id="t2"></div>
+      <div class="note"><span class="star">*</span> Microcuff ETT should only be used in term neonates &gt;3 kg.</div></div>
+    <div class="card"><h2>Table 3: Difficult airway / accessory devices, by ETT internal diameter</h2><div class="tablewrap" id="t3"></div></div>
+    <div class="card"><h2>Table 4: Intubating through 1st-generation disposable LMA</h2><div class="tablewrap" id="t4"></div>
+      <div class="note">LMA under size 3 will not allow passage of pilot balloon.</div></div>
+  </section>
+
+  <!-- CHECKLIST -->
+  <section class="view" id="v-checklist">
+    <div class="progress"><div class="bar"><i id="pbar"></i></div><span id="ptext">0/0</span><button class="btn" id="resetBtn">Reset</button></div>
+    <div class="cols" id="checkCols"></div>
+  </section>
+
+  <!-- VENT -->
+  <section class="view" id="v-vent">
+    <div class="card vent">
+      <h2>Suggested initial ventilator settings</h2>
+      <dl>
+        <dt>Respiratory pressures (Pinsp &amp; PEEP)</dt>
+        <dd><ul><li>PIP 15–30 (aim for chest wall movement / Vt)</li><li>PEEP 5–8 (always have on)</li></ul></dd>
+        <dt>Respiratory rate</dt>
+        <dd><ul id="rrList"><li data-r="lt10">&lt;10 kg: 25–30</li><li data-r="gt20">&gt;20 kg: 20–25</li><li data-r="gt50">&gt;50 kg: 12–20</li></ul></dd>
+        <dt>Tidal volume</dt>
+        <dd><ul><li>5–8 ml/kg, aim for chest rise</li></ul></dd>
+        <dt>Difficult to ventilate?</dt>
+        <dd><ul><li>Has ETT moved / kinked?</li><li>Aspirate NG</li><li>Consider ETT saline + physio</li></ul></dd>
+      </dl>
+      <div class="note">Hamilton ventilator: use the smaller circuit if &lt;15 kg (from the checklist).</div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  Transcribed from the <i>Paediatric Airway Equipment Quick Reference</i> (Brighton Anaesthesia, University Hospitals Sussex; Dr A Kermode, Dr J Andren, Dr E Lillie, 2022) and the <i>Paediatric Intubation Checklist</i> (St Richard's Hospital, Chichester, v1.3 Apr '24). Values were read from photographs: check them against the printed originals before relying on this. It is an aide-memoire, not a substitute for clinical judgement or local guidance.
+</footer>
+
+<div id="modal"><div class="box"><div id="modalText">Clear all ticks?</div><div class="row"><button class="btn" id="mNo">Cancel</button><button class="btn solid" id="mYes">Clear</button></div></div></div>
+
+<script>
+(function(){
+"use strict";
+// ---------- DATA (transcribed from the sheets) ----------
+var DASH = "—";
+// Table 1: one row per weight on the sheet
+var T1 = [
+ // w, ageBand, guedel, lma, igel, laryngoscope, airq
+ [1,"Neonate","3.5 / 5","1",DASH,"Mac 0 / Miller 0","0 (3)"],
+ [2,"Neonate","5","1","1","Mac 0 / Miller 0","0 (3)"],
+ [3,"Neonate","5","1","1","Mac 0 / Miller 0","0.5 (4)"],
+ [4,"Neonate","5 / 5.5","1","1","Mac 0 / Miller 0","0.5 (4)"],
+ [5,"Infant","5.5","1.5","1.5","Mac 1 / Miller 1","1.0 (4.5)"],
+ [6,"Infant","5.5","1.5","1.5","Mac 1 / Miller 1","1.0 (4.5)"],
+ [7,"Infant","5.5","1.5","1.5","Mac 1 / Miller 1","1.0 (4.5)"],
+ [8,"Infant","5.5","1.5","1.5","Mac 1 / Miller 1","1.5 (5)"],
+ [9,"Infant","5.5","1.5","1.5","Mac 1 / Miller 1","1.5 (5)"],
+ [10,"1 to 6","6.5","2","1.5 / 2","Mac 1 / Miller 1","1.5 (5)"],
+ [11,"1 to 6","6.5","2","1.5 / 2","Mac 1 or 2","1.5 (5)"],
+ [12,"1 to 6","6.5","2","1.5 / 2","Mac 1 or 2","1.5 (5)"],
+ [13,"1 to 6","6.5","2","2","Mac 2","1.5 (5)"],
+ [14,"1 to 6","6.5","2","2","Mac 2","1.5 (5)"],
+ [15,"1 to 6","6.5","2","2","Mac 2","1.5 (5)"],
+ [17,"1 to 6","6.5","2","2","Mac 2","1.5 (5)"],
+ [20,"1 to 6","6.5","2.5","2","Mac 2 or 3","2 (5.5)"],
+ [25,"6 to 10","7","2.5","2 / 2.5","Mac 2 or 3","2 (5.5)"],
+ [30,"6 to 10","7","3","2.5 / 3","Mac 2 or 3","2 (5.5)"],
+ [35,"6 to 10","7","3","2.5 / 3","Mac 3","3 (7)"],
+ [40,"10 to 16","8","3","3","Mac 3","3 (7)"],
+ [45,"10 to 16","8","3","3","Mac 3","3 (7)"],
+ [50,"10 to 16","8","4","3","Mac 3","3 (7)"],
+ [55,"10 to 16","8","4","3","Mac 3 or 4","3 (7)"],
+ [60,"10 to 16","8","4","3","Mac 3 or 4","3 (7)"]
+];
+var GUEDEL_NOTE = {"6.5":"for 1–6 yr old","8":"12 yrs to adult"};
+var GUEDEL_COL = {"3.5":"--g35","5":"--g5","5.5":"--g55","6.5":"--g65","7":"--g7","8":"--g8"};
+
+// Table 2: weight rows (<1y) then age rows (>=1y)
+// key, band, microcuff, uncuffed, oral length cm
+var T2W = [
+ [1,"Neonate",DASH,"2 – 2.5","7"],
+ [2,"Neonate",DASH,"2.5 – 3","8"],
+ [3,"Neonate","3*","3 – 3.5","9"],
+ [4,"Neonate","3*","3.5","10"],
+ [5,"Infant","3*","3.5","11"],
+ [6,"Infant","3*","3.5","11"],
+ [7,"Infant","3*","3.5 – 4","11.5"],
+ [8,"Infant","3.5","3.5 – 4","12"],
+ [9,"Infant","3.5","3.5 – 4","12.5"],
+ [10,"Infant","3.5","3.5 – 4","13"]
+];
+var T2A = [
+ [1,"3.5","4","13.5"],[2,"4","4.5","14"],[3,"4","4.5 – 5","14.5"],[4,"4.5","5","15"],
+ [5,"4.5","5 – 5.5","15.5"],[6,"5","5.5","16"],[7,"5","5.5 – 6","16.5"],[8,"5.5","6","17"],
+ [9,"5.5",DASH,"17.5"],[10,"6",DASH,"18"],[11,"6",DASH,"18.5"],[12,"6.5",DASH,"19"],
+ [13,"6.5",DASH,"19.5"],[14,"7",DASH,"20"],[15,"7",DASH,"20.5"]
+];
+
+// Table 3: by ETT ID
+// id, stylet, bougie, suction, ngt, storz, olympus, videoBronch, cookAEC
+var VB3S = "Size 3 (No. 162) — SNUG, remove 15 mm connector";
+var T3 = [
+ ["3","Small","5 Fr","6 Fr","6 Fr",DASH,"2.2 mm",VB3S,"8 Fr"],
+ ["3.5","Small","10 Fr","6 Fr","6 Fr","2.8 mm","2.2 mm","Size 3 (No. 162)","8 Fr"],
+ ["4","Small","10 Fr","8 Fr","8 Fr","2.8 mm","2.2 mm","Size 3 (No. 162)","11 Fr"],
+ ["4.5","Small","10 Fr","8 Fr","8 Fr","4.0 mm","4.1 mm","Size 4 (No. 164)","11 Fr"],
+ ["5","Medium","15 Fr","10 Fr","10 Fr","4.0 mm","4.1 mm","Size 4 (No. 164)","14 Fr"],
+ ["5.5","Medium","15 Fr","10 Fr","10 Fr","4.0 mm","4.1 mm","Size 4 (No. 164)","14 Fr"],
+ ["6","Medium","15 Fr","12 Fr","12 Fr","4.0 mm","4.1 mm","Size 4 (No. 164)","14 Fr"],
+ ["6.5","Medium","15 Fr","12 Fr","12 Fr","4.0 mm","4.1 mm","Size 4 (No. 164)","14 Fr"],
+ ["7","Medium","15 Fr","14 Fr","14 Fr","4.0 mm","4.1 mm","Size 4 (No. 164)","14 Fr"],
+ ["7.5","Medium","15 Fr","14 Fr","14 Fr","4.0 mm","4.1 mm","Size 4 (No. 164)","14 Fr"]
+];
+// Table 4
+var T4 = [["1","3",DASH],["1.5","3.5",DASH],["2","4",DASH],["2.5","5",DASH],["3","6","5.5"]];
+
+// Checklist
+var CHECK = [
+ {t:"Patient",c:"#6a9a1f",items:[
+  ["Airway assessment","Any features of a difficult airway?"],
+  ["Checked and secure IV/IO access",""],
+  ["Consider patient positioning","Shoulder roll vs pillow"],
+  ["Optimise circulation","Fluid bolus · Consider inotrope infusion"],
+  ["Allergies",""],
+  ["NG tube in + aspirated",""],
+  ["Pre-oxygenate","100% O2 for 3 mins · CPAP via T-piece · Optiflow"],
+  ["Communication","Retrieval team aware? · Parents updated? · Has 2nd anaesthetic consultant arrived? · 'Seldinger technique' bag? · ENT/MAST trolley?"],
+  ["Are we in the best location?",""]
+ ]},
+ {t:"Equipment",c:"#1f7fc4",items:[
+  ["Apply monitors","EtCO2, SpO2, BP, ECG · Defib needed?"],
+  ["T-piece",""],
+  ["Working suction",""],
+  ["Direct laryngoscope","Straight + curved"],
+  ["Videolaryngoscope","CMAC (straight) if <2y · Macgrath (curved)"],
+  ["Stylet","Shape to laryngoscope"],
+  ["ETT (+/- half a size)","Consider uncuffed if hard to pass ETT"],
+  ["Guedel",""],["Magills",""],["Supraglottic airway",""],["Tape/tie",""],["Suction",""],
+  ["NG tube + NG syringe",""],["FONA",""],
+  ["Hamilton ventilator","Smaller circuit if <15 kg"],
+  ["Difficult airway trolley?",""]
+ ]},
+ {t:"Drugs",c:"#d9731a",items:[
+  ["SORT drug calculator printed?",""],
+  ["Induction drugs","Induction agent · Opioid · Muscle relaxant · Flushes · Fluid bolus prior to intubation?"],
+  ["Emergency drugs","Atropine · Adrenaline (arrest dose, lite dose) · Fluid bolus · Vasopressor"],
+  ["Maintenance sedation",""]
+ ]},
+ {t:"Team",c:"#5a3ea8",items:[
+  ["Allocate roles","Team leader · 1st/2nd intubator · Drug administration · Airway assistant · Cricoid · NG aspiration · Manual inline stabilisation · Runner · Scribe · CPR?"],
+  ["Confirm plan","Plan A · Plan B · Plan C · Plan D"],
+  ["Any questions or concerns?",""]
+ ]}
+];
+
+// ---------- helpers ----------
+function $(id){return document.getElementById(id)}
+function el(tag,attrs,html){var e=document.createElement(tag);if(attrs)for(var k in attrs)e.setAttribute(k,attrs[k]);if(html!=null)e.innerHTML=html;return e}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function store(k,v){try{if(v===undefined)return JSON.parse(localStorage.getItem(k));localStorage.setItem(k,JSON.stringify(v))}catch(e){return null}}
+
+// Build a table with vertical merging of identical consecutive cells per column
+function buildTable(headers,rows,mergeCols,keyCol){
+  var t=el("table"),thead=el("thead"),tr=el("tr");
+  headers.forEach(function(h){tr.appendChild(el("th",null,h))});
+  thead.appendChild(tr);t.appendChild(thead);
+  var tb=el("tbody"),n=rows.length,nc=headers.length;
+  var span=[];for(var c=0;c<nc;c++){span[c]=[];var i=0;while(i<n){var j=i+1;if(mergeCols.indexOf(c)>=0){while(j<n&&rows[j][c]===rows[i][c])j++}span[c][i]=j-i;for(var q=i+1;q<j;q++)span[c][q]=0;i=j}}
+  for(var r=0;r<n;r++){var row=el("tr",{"data-key":rows[r][keyCol]});
+    for(c=0;c<nc;c++){if(span[c][r]===0)continue;var td=el("td",{rowspan:span[c][r],"data-c":c,"data-r0":r,"data-r1":r+span[c][r]-1},esc(rows[r][c]));if(c===keyCol)td.className="rowkey";row.appendChild(td)}
+    tb.appendChild(row)}
+  t.appendChild(tb);return t;
+}
+function highlight(container,keyVal){
+  var t=container.querySelector("table");if(!t)return;
+  t.querySelectorAll(".hi").forEach(function(x){x.classList.remove("hi")});
+  if(keyVal==null)return;
+  var rows=t.tBodies[0].rows,idx=-1;
+  for(var i=0;i<rows.length;i++){if(rows[i].getAttribute("data-key")===String(keyVal)){idx=i;rows[i].classList.add("hi")}}
+  if(idx<0)return;
+  t.querySelectorAll("td").forEach(function(td){var a=+td.getAttribute("data-r0"),b=+td.getAttribute("data-r1");if(idx>=a&&idx<=b)td.classList.add("hi")});
+}
+
+// ---------- tables view ----------
+var T2ALL = T2W.map(function(r){return [r[1],r[0]+" kg",r[2],r[3],r[4]]})
+  .concat(T2A.map(function(r){return [r[0]+" yr",DASH,r[1],r[2],r[3]]}));
+$("t1").appendChild(buildTable(["Age (years)","Weight (kg)","Guedel","LMA","iGel","Laryngoscope blade / CMAC","Air-Q (max uncuffed ETT)"],
+  T1.map(function(r){return [r[1],String(r[0]),r[2],r[3],r[4],r[5],r[6]]}),[0,2,3,4,5,6],1));
+$("t2").appendChild(buildTable(["Age","Weight","ETT size (Microcuff)","ETT size (uncuffed)","Oral ETT length (cm)"],T2ALL,[0,2,3],-1));
+$("t3").appendChild(buildTable(["ETT ID","Stylet","Bougie","Suction catheter","NGT","Fibreoptic: Storz","Fibreoptic: Olympus","Video bronchoscope","Cook airway exchange catheter"],T3,[1,2,3,4,5,6,7,8],0));
+$("t4").appendChild(buildTable(["LMA","Uncuffed ETT","Cuffed ETT"],T4,[],0));
+// table 2 row keys for highlighting
+(function(){var rows=$("t2").querySelector("tbody").rows;for(var i=0;i<rows.length;i++){rows[i].setAttribute("data-key",i<T2W.length?"w"+T2W[i][0]:"a"+T2A[i-T2W.length][0])}})();
+
+// ---------- lookup ----------
+var state = store("paw_state") || {mode:"infant",w:null,a:null,id:null};
+var idManual = false;
+
+function chipRow(container,items,sel,onPick){
+  container.innerHTML="";
+  items.forEach(function(it){var b=el("button",{type:"button"},it.html);if(String(it.v)===String(sel))b.className="on";b.onclick=function(){onPick(it.v)};container.appendChild(b)});
+}
+function res(k,v,n,big){return '<div class="res'+(big?' big':'')+'"><div class="k">'+k+'</div><div class="v">'+v+'</div>'+(n?'<div class="n">'+n+'</div>':'')+'</div>'}
+
+function firstNum(s){var m=String(s).match(/\d+(\.\d+)?/);return m?m[0]:null}
+
+function render(){
+  store("paw_state",state);
+  document.querySelectorAll("#mode button").forEach(function(b){b.classList.toggle("on",b.getAttribute("data-m")===state.mode)});
+  var infant = state.mode==="infant";
+  $("ageBlock").hidden = infant;
+  $("wtLbl").textContent = infant ? "Weight (kg)" : "Weight (kg), for airway devices";
+  var wts = infant ? T1.filter(function(r){return r[0]<=10}) : T1;
+  if(infant && state.w>10) state.w=null;
+  chipRow($("wtChips"),wts.map(function(r){return {v:r[0],html:r[0]+"<small>kg</small>"}}),state.w,function(v){state.w=(state.w===v?null:v);idManual=false;render()});
+  chipRow($("ageChips"),T2A.map(function(r){return {v:r[0],html:r[0]+"<small>yr</small>"}}),state.a,function(v){state.a=(state.a===v?null:v);idManual=false;render()});
+
+  // ETT
+  var ett=null,ettHtml="";
+  if(infant && state.w!=null){var r=T2W.filter(function(x){return x[0]===state.w})[0];if(r)ett={band:r[1],mc:r[2],un:r[3],len:r[4],basis:state.w+" kg ("+r[1].toLowerCase()+")",key:"w"+r[0]}}
+  if(!infant && state.a!=null){var r2=T2A.filter(function(x){return x[0]===state.a})[0];if(r2)ett={mc:r2[1],un:r2[2],len:r2[3],basis:"age "+r2[0]+" yr",key:"a"+r2[0]}}
+  if(ett){
+    ettHtml='<div class="results">'+
+      res("Microcuff (cuffed)",esc(ett.mc),ett.mc.indexOf("*")>=0?'<span class="star">*</span> Only in term neonates &gt;3 kg':"")+
+      res("Uncuffed",esc(ett.un),ett.un===DASH?"Not given on sheet for this age":"")+
+      res("Oral ETT length",esc(ett.len)+" cm","")+
+      '</div><div class="note">Based on <b>'+esc(ett.basis)+'</b>. Have ± half a size ready.</div>';
+  } else ettHtml='<div class="empty">'+(infant?"Select a weight.":"Select an age.")+'</div>';
+  $("ettOut").innerHTML=ettHtml;
+
+  // Devices
+  var d = state.w!=null ? T1.filter(function(x){return x[0]===state.w})[0] : null;
+  if(d){
+    var g=d[2].split(" / ").map(function(s){return '<span class="swatch" style="background:var('+GUEDEL_COL[s]+')"></span>'+s}).join(" or ");
+    var gn=d[2].split(" / ").map(function(s){return GUEDEL_NOTE[s]}).filter(Boolean).join("; ");
+    var aq=d[6].match(/^([\d.]+) \(([\d.]+)\)$/);
+    $("devOut").innerHTML='<div class="results">'+
+      res("Laryngoscope / CMAC",esc(d[5]),"",true)+
+      res("Guedel",g,gn)+
+      res("LMA",esc(d[3]),"")+
+      res("iGel",esc(d[4]),d[4]===DASH?"Not given on sheet for 1 kg":(d[4].indexOf("/")>=0?"Both sizes span this weight":""))+
+      res("Air-Q",aq?aq[1]:esc(d[6]),aq?"Max uncuffed ETT through it: "+aq[2]:"")+
+      '</div><div class="note">Weight <b>'+d[0]+' kg</b> (age band on sheet: '+esc(d[1])+').</div>';
+  } else $("devOut").innerHTML='<div class="empty">Select a weight.</div>';
+
+  // Accessory ID
+  if(!idManual){ var auto=null; if(ett){auto=firstNum(ett.mc)||firstNum(ett.un)} if(auto && !T3.some(function(x){return x[0]===auto}))auto=null; state.id=auto }
+  chipRow($("idChips"),T3.map(function(r){return {v:r[0],html:r[0]+"<small>mm ID</small>"}}),state.id,function(v){state.id=(state.id===v?null:v);idManual=true;render()});
+  var a = state.id ? T3.filter(function(x){return x[0]===state.id})[0] : null;
+  if(a){
+    $("accOut").innerHTML='<div class="results">'+
+      res("Stylet",a[1])+res("Bougie",a[2])+res("Suction catheter",a[3])+res("NGT",a[4])+
+      res("Fibreoptic: Storz",a[5],a[5]===DASH?"No Storz scope listed for ID 3":"")+res("Fibreoptic: Olympus",a[6])+
+      res("Video bronchoscope",esc(a[7].split(" — ")[0]),a[7].indexOf(" — ")>=0?'<b class="star">'+esc(a[7].split(" — ")[1])+'</b>':"",true)+res("Cook airway exchange catheter",a[8])+
+      '</div><div class="note">For ETT ID <b>'+a[0]+' mm</b>.'+(idManual?'':' Auto-selected from the ETT size; tap another size to change.')+'</div>';
+  } else $("accOut").innerHTML='<div class="empty">Pick an ETT ID (it is pre-selected once you choose a weight or age). For a range such as 3 – 3.5, the lower size is pre-selected.</div>';
+
+  // LMA intubation
+  var lmaSize = d ? d[3] : null;
+  var lrow = lmaSize ? T4.filter(function(x){return x[0]===lmaSize})[0] : null;
+  if(lrow){
+    $("lmaOut").innerHTML='<div class="results">'+res("LMA",lrow[0])+res("Uncuffed ETT through it",lrow[1])+res("Cuffed ETT through it",lrow[2],lrow[2]===DASH?"LMA under size 3 will not allow passage of pilot balloon":"")+'</div>';
+  } else if(d){
+    $("lmaOut").innerHTML='<div class="empty">LMA size '+esc(lmaSize)+' is not listed in Table 4.</div>';
+  } else $("lmaOut").innerHTML='<div class="empty">Select a weight to match the LMA size.</div>';
+
+  // Vent
+  if(state.w!=null){
+    var w=state.w, rr = w<10?"25–30":(w>50?"12–20":(w>20?"20–25":null));
+    var rrNote = w<10?"&lt;10 kg":(w>50?"&gt;50 kg":(w>20?"&gt;20 kg":"The sheet gives no rate for 10–20 kg"));
+    var vtLo=Math.round(w*5), vtHi=Math.round(w*8);
+    $("ventOut").innerHTML='<div class="results">'+
+      res("PIP",'15–30',"Aim for chest wall movement / Vt")+res("PEEP","5–8","Always have on")+
+      res("Resp rate",rr||DASH,rrNote)+
+      res("Tidal volume",vtLo+"–"+vtHi+" ml","5–8 ml/kg × "+w+" kg (calculated)")+'</div>';
+    document.querySelectorAll("#rrList li").forEach(function(li){var k=li.getAttribute("data-r");li.classList.toggle("match",(k==="lt10"&&w<10)||(k==="gt20"&&w>20&&w<=50)||(k==="gt50"&&w>50))});
+  } else { $("ventOut").innerHTML='<div class="empty">Select a weight.</div>'; document.querySelectorAll("#rrList li").forEach(function(li){li.classList.remove("match")}) }
+
+  // Table highlights
+  highlight($("t1"),state.w);
+  highlight($("t2"),ett?ett.key:null);
+  highlight($("t3"),state.id);
+  highlight($("t4"),lrow?lrow[0]:null);
+}
+document.querySelectorAll("#mode button").forEach(function(b){b.onclick=function(){state.mode=b.getAttribute("data-m");idManual=false;render()}});
+
+// ---------- checklist ----------
+var ticks = store("paw_ticks") || {};
+function renderChecklist(){
+  var cols=$("checkCols");cols.innerHTML="";var total=0,done=0;
+  CHECK.forEach(function(sec,si){
+    var card=el("div",{"class":"card check-sec",style:"--c:"+sec.c});card.appendChild(el("h2",null,esc(sec.t)));
+    sec.items.forEach(function(it,ii){
+      var id=si+"-"+ii,on=!!ticks[id];total++;if(on)done++;
+      var lab=el("label",{"class":"check-item"+(on?" done":"")});
+      var cb=el("input",{type:"checkbox"});cb.checked=on;
+      cb.onchange=function(){if(cb.checked)ticks[id]=1;else delete ticks[id];store("paw_ticks",ticks);renderChecklist()};
+      lab.appendChild(cb);
+      lab.appendChild(el("div",null,'<div class="t">'+esc(it[0])+'</div>'+(it[1]?'<div class="s">'+esc(it[1])+'</div>':'')));
+      card.appendChild(lab);
+    });
+    cols.appendChild(card);
+  });
+  $("ptext").textContent=done+"/"+total;$("pbar").style.width=(total?100*done/total:0)+"%";
+}
+$("resetBtn").onclick=function(){$("modal").classList.add("on")};
+$("mNo").onclick=function(){$("modal").classList.remove("on")};
+$("mYes").onclick=function(){ticks={};store("paw_ticks",ticks);renderChecklist();$("modal").classList.remove("on")};
+
+// ---------- routing ----------
+var VIEWS=["lookup","tables","checklist","vent"];
+function route(){var h=(location.hash||"").replace("#","");if(VIEWS.indexOf(h)<0)h="lookup";
+  VIEWS.forEach(function(v){$("v-"+v).classList.toggle("on",v===h)});
+  document.querySelectorAll("#nav a").forEach(function(a){a.classList.toggle("on",a.getAttribute("data-v")===h)});
+  window.scrollTo(0,0)}
+window.addEventListener("hashchange",route);
+
+render();renderChecklist();route();
+// Offline support when served over https (GitHub Pages). Silently skipped elsewhere.
+if("serviceWorker" in navigator && location.protocol==="https:"){
+  window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){})});
+}
+})();
+</script>
+</body>
+</html>
