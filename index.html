@@ -2,188 +2,297 @@
 <html lang="en-GB">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Paediatric Airway Quick Reference</title>
 <link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#005eb8">
+<meta name="theme-color" content="#10222f">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icons/icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Paeds Airway">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#f4f6f9; --card:#fff; --ink:#111827; --muted:#5b6474; --line:#d9dee7;
-  --accent:#005eb8; --accent-ink:#fff; --hi:#fff4c2; --hi-line:#e0b400;
-  --warn-bg:#fdecec; --warn-ink:#8a1111; --ok:#127a3e;
-  --g35:#d9dbb0; --g5:#c8c9e6; --g55:#6f6f6f; --g65:#e08a1e; --g7:#ffffff; --g8:#127a3e;
+  --paper:#e9eef1; --surface:#ffffff; --sunk:#f3f6f8;
+  --ink:#10222f; --ink-2:#4a5d6b; --rule:#d3dce2;
+  --teal:#0a6e8a; --teal-ink:#ffffff; --teal-soft:#dcedf2;
+  --red:#b8231c; --red-soft:#fbe9e7;
+  --mark:#ffd84d; --mark-soft:#fff3c4;
+  --g35:#d9dbb0; --g5:#c3c5e8; --g55:#6f6f6f; --g65:#e08a1e; --g7:#ffffff; --g8:#127a3e;
+  --radius-lg:14px; --radius-sm:8px;
+  --font:"Atkinson Hyperlegible Next","Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --nav-h:64px;
 }
 @media (prefers-color-scheme: dark){
-  :root{ --bg:#0d1117; --card:#161b22; --ink:#e8edf3; --muted:#9aa6b5; --line:#2b333f;
-    --accent:#3b8eea; --hi:#3a3110; --hi-line:#c9a227; --warn-bg:#3a1414; --warn-ink:#ffb4b4; --ok:#4cc67e; }
+  :root{ --paper:#0b1720; --surface:#12222d; --sunk:#0f1d27; --ink:#e4edf2; --ink-2:#97aab7; --rule:#243846;
+    --teal:#3fb1cf; --teal-ink:#06212b; --teal-soft:#123543; --red:#ff7a70; --red-soft:#3a1a18; --mark:#e9c23a; --mark-soft:#3a3214; }
 }
 *{box-sizing:border-box}
-html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-text-size-adjust:100%}
-header{position:sticky;top:0;z-index:20;background:var(--accent);color:var(--accent-ink);box-shadow:0 2px 6px rgba(0,0,0,.2)}
-header h1{margin:0;font-size:17px;padding:10px 14px 4px;font-weight:700}
-nav{display:flex;overflow-x:auto}
-nav a{flex:1;min-width:84px;text-align:center;padding:10px 6px 12px;color:var(--accent-ink);text-decoration:none;font-weight:600;font-size:15px;opacity:.75;border-bottom:3px solid transparent}
-nav a.on{opacity:1;border-bottom-color:#fff}
-main{max-width:980px;margin:0 auto;padding:12px 12px 40px}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 16px/1.45 var(--font);font-variant-numeric:tabular-nums;
+  padding-bottom:calc(var(--nav-h) + env(safe-area-inset-bottom))}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--teal);outline-offset:2px}
+
+/* ---------- App bar ---------- */
+.appbar{position:sticky;top:0;z-index:30;background:var(--ink);color:#fff;padding:calc(10px + env(safe-area-inset-top)) 16px 10px}
+@media (prefers-color-scheme: dark){.appbar{background:#06111a}}
+.appbar-in{max-width:1080px;margin:0 auto;display:flex;align-items:center;gap:12px}
+.mark{width:34px;height:34px;border-radius:9px;background:var(--teal);display:grid;place-items:center;flex:0 0 34px}
+.mark svg{width:20px;height:20px}
+.ttl{flex:1;min-width:0}
+.ttl b{display:block;font-weight:800;font-size:16px;letter-spacing:-.005em;line-height:1.15}
+.ttl span{display:block;font-size:13px;color:#a9bcc8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ttl span.has{color:var(--mark)}
+.clear{border:1px solid #3a5163;background:transparent;color:#fff;border-radius:999px;padding:6px 12px;font-size:13px;font-weight:600}
+.clear[hidden]{display:none}
+
+/* ---------- Nav: bottom on phones, top on wide screens ---------- */
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--surface);border-top:1px solid var(--rule);
+  display:flex;padding-bottom:env(safe-area-inset-bottom)}
+.tabs a{flex:1;height:var(--nav-h);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+  color:var(--ink-2);text-decoration:none;font-size:12.5px;font-weight:600}
+.tabs a svg{width:23px;height:23px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.tabs a.on{color:var(--teal)}
+.tabs a.on svg{stroke-width:2.4}
+@media (min-width:820px){
+  body{padding-bottom:0}
+  .tabs{position:sticky;top:54px;bottom:auto;border-top:0;border-bottom:1px solid var(--rule);justify-content:center;padding:0}
+  .tabs a{flex:0 0 auto;flex-direction:row;height:48px;padding:0 20px;font-size:15px;gap:8px;border-bottom:3px solid transparent}
+  .tabs a svg{width:19px;height:19px}
+  .tabs a.on{border-bottom-color:var(--teal)}
+}
+
+main{max-width:1080px;margin:0 auto;padding:16px 14px 28px}
 .view{display:none}.view.on{display:block}
-.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;margin:0 0 12px}
-.card h2{margin:0 0 8px;font-size:15px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
-.banner{background:var(--warn-bg);color:var(--warn-ink);font-weight:700;border-radius:10px;padding:10px 12px;margin:0 0 12px;text-align:center}
-.seg{display:flex;border:2px solid var(--accent);border-radius:10px;overflow:hidden;margin-bottom:10px}
-.seg button{flex:1;border:0;background:transparent;color:var(--ink);padding:12px 6px;font-size:16px;font-weight:700}
-.seg button.on{background:var(--accent);color:var(--accent-ink)}
-.lbl{font-size:13px;font-weight:700;color:var(--muted);margin:8px 0 6px;text-transform:uppercase;letter-spacing:.04em}
-.chips{display:grid;grid-template-columns:repeat(auto-fill,minmax(58px,1fr));gap:6px}
-.chips button{min-height:48px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;font-size:17px;font-weight:700}
-.chips button small{display:block;font-size:11px;font-weight:600;color:var(--muted)}
-.chips button.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
-.chips button.on small{color:var(--accent-ink)}
-.results{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
-.res{border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:var(--card)}
-.res .k{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.03em}
-.res .v{font-size:24px;font-weight:800;line-height:1.15;margin-top:2px}
-.res .n{font-size:12px;color:var(--muted);margin-top:2px}
-.res.big{grid-column:1/-1}
-.res.big .v{font-size:30px}
-.swatch{display:inline-block;width:18px;height:18px;border-radius:4px;border:1px solid #888;vertical-align:-2px;margin-right:6px}
-.empty{color:var(--muted);font-style:italic;padding:6px 0}
-.note{font-size:13px;color:var(--muted);margin-top:8px}
-.note b{color:var(--ink)}
-.star{color:var(--warn-ink);font-weight:700}
-.tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--line);border-radius:10px}
-table{border-collapse:collapse;width:100%;min-width:560px;font-size:14px;background:var(--card)}
-th,td{border:1px solid var(--line);padding:6px 6px;text-align:center;vertical-align:middle}
-th{background:var(--accent);color:var(--accent-ink);font-size:12.5px;position:sticky;top:0}
-td.rowkey{font-weight:800}
-tr.hi td.rowkey,td.hi{background:var(--hi);box-shadow:inset 0 0 0 2px var(--hi-line)}
-.check-sec{border-left:6px solid var(--c);}
-.check-sec h2{color:var(--c)}
-.check-item{display:flex;gap:10px;align-items:flex-start;padding:9px 4px;border-top:1px solid var(--line);cursor:pointer;user-select:none}
-.check-item:first-of-type{border-top:0}
-.check-item input{width:24px;height:24px;flex:0 0 24px;margin:0;accent-color:var(--ok)}
-.check-item .t{font-weight:600}
-.check-item .s{font-size:13.5px;color:var(--muted);margin-top:2px}
-.check-item.done .t{text-decoration:line-through;color:var(--muted)}
-.progress{position:sticky;top:86px;z-index:10;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 12px;margin-bottom:12px;display:flex;align-items:center;gap:10px}
-.bar{flex:1;height:10px;border-radius:6px;background:var(--line);overflow:hidden}
-.bar i{display:block;height:100%;background:var(--ok);width:0}
-.btn{border:1.5px solid var(--accent);background:transparent;color:var(--accent);border-radius:9px;padding:8px 12px;font-weight:700;font-size:14px}
-.btn.solid{background:var(--accent);color:var(--accent-ink)}
-.cols{display:grid;grid-template-columns:1fr;gap:12px}
-@media(min-width:760px){.cols{grid-template-columns:1fr 1fr}}
-.vent dt{font-weight:800;margin-top:10px}
-.vent dd{margin:4px 0 0 0}
-.vent li.match{font-weight:800;background:var(--hi);border-radius:6px;padding:0 4px}
-footer{font-size:12px;color:var(--muted);text-align:center;padding:10px 14px 30px;max-width:980px;margin:0 auto}
-#modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:50;padding:20px}
+
+/* ---------- Warning rule ---------- */
+.warn{display:flex;gap:10px;align-items:center;background:var(--red-soft);color:var(--red);border-left:5px solid var(--red);
+  border-radius:var(--radius-sm);padding:10px 14px;font-weight:800;font-size:15px;margin:0 0 16px}
+.warn svg{flex:0 0 20px;width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+
+/* ---------- Panels ---------- */
+.panel{background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius-lg);margin:0 0 14px;overflow:hidden}
+.panel-h{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:14px 16px 4px}
+.panel-h h2{margin:0;font-size:17px;font-weight:800;letter-spacing:-.01em}
+.panel-h small{color:var(--ink-2);font-size:13px;text-align:right}
+.panel-b{padding:8px 16px 16px}
+
+/* ---------- Lookup layout ---------- */
+@media (min-width:820px){
+  .lookup{display:grid;grid-template-columns:minmax(300px,380px) 1fr;gap:18px;align-items:start}
+  .picker{position:sticky;top:118px}
+}
+.seg{display:grid;grid-template-columns:1fr 1fr;background:var(--sunk);border:1px solid var(--rule);border-radius:12px;padding:4px;gap:4px;margin:4px 0 14px}
+.seg button{border:0;background:transparent;border-radius:9px;padding:11px 6px;font-weight:700;font-size:15px;color:var(--ink-2)}
+.seg button.on{background:var(--surface);color:var(--ink);box-shadow:0 1px 0 var(--rule),0 0 0 1px var(--rule)}
+.grp{font-size:14px;font-weight:700;color:var(--ink-2);margin:12px 0 8px}
+.grp:first-child{margin-top:0}
+.keys{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.keys button{height:50px;border:1px solid var(--rule);background:var(--surface);border-radius:10px;font-size:19px;font-weight:800;
+  display:flex;align-items:center;justify-content:center;gap:2px}
+.keys button i{font-style:normal;margin-top:5px;font-size:11.5px;font-weight:600;color:var(--ink-2)}
+.keys button:active{background:var(--sunk)}
+.keys button.on{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.keys button.on i{color:inherit;opacity:.75}
+.hint{font-size:13.5px;color:var(--ink-2);margin:12px 0 0}
+
+/* ---------- ETT hero readout ---------- */
+.readout{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--rule)}
+.readout > div{padding:14px 16px 16px;border-right:1px solid var(--rule)}
+.readout > div:last-child{border-right:0}
+.readout .k{font-size:13.5px;font-weight:700;color:var(--ink-2)}
+.readout .v{font-size:clamp(34px,9vw,52px);font-weight:800;line-height:1;letter-spacing:-.02em;margin-top:6px}
+.readout .v{white-space:nowrap}
+.readout .v.long{font-size:clamp(27px,7.2vw,46px)}
+.readout .v small{font-size:.42em;font-weight:700;letter-spacing:0;margin-left:3px;color:var(--ink-2)}
+.readout .n{font-size:12.5px;color:var(--ink-2);margin-top:6px}
+.readout .primary{background:var(--teal-soft)}
+.readout .primary .v{color:var(--teal)}
+@media (prefers-color-scheme: dark){.readout .primary .v{color:var(--teal)}}
+.foot{padding:10px 16px 14px;font-size:13.5px;color:var(--ink-2);border-top:1px solid var(--rule)}
+.foot b{color:var(--ink)}
+.star{color:var(--red);font-weight:800}
+
+/* ---------- Spec rows ---------- */
+.spec{margin:0;padding:0;list-style:none}
+.spec li{display:grid;grid-template-columns:1fr auto;gap:4px 14px;align-items:baseline;padding:11px 16px;border-top:1px solid var(--rule)}
+.spec .k{font-weight:600;font-size:15px}
+.spec .v{font-weight:800;font-size:22px;text-align:right;letter-spacing:-.01em}
+.spec .n{grid-column:1/-1;font-size:13px;color:var(--ink-2);margin-top:-2px}
+.spec .n.alert{color:var(--red);font-weight:700}
+.spec li.wide{grid-template-columns:1fr}
+.spec li.wide .v{text-align:left;font-size:19px}
+.chip{display:inline-block;width:14px;height:14px;border-radius:4px;border:1px solid rgba(0,0,0,.35);vertical-align:1px;margin-right:6px}
+.or{font-weight:600;font-size:15px;color:var(--ink-2);margin:0 6px}
+.empty{padding:14px 16px 18px;color:var(--ink-2);border-top:1px solid var(--rule)}
+.flash{animation:flash .9s ease-out}
+@keyframes flash{from{background:var(--mark-soft)}to{background:transparent}}
+.idkeys{padding:4px 16px 14px}
+.idkeys .keys button{height:44px;font-size:17px}
+
+/* ---------- Tables ---------- */
+.tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-top:1px solid var(--rule)}
+table{border-collapse:collapse;border-style:hidden;width:100%;min-width:600px;font-size:14.5px}
+th,td{border:1px solid var(--rule);padding:8px 8px;text-align:center;vertical-align:middle}
+th{background:var(--sunk);color:var(--ink-2);font-size:12.5px;font-weight:700;line-height:1.25}
+td{font-weight:600}
+td.rowkey{font-weight:800;background:var(--sunk)}
+tr.hi td.rowkey,td.hi{background:var(--mark-soft);box-shadow:inset 0 0 0 2px var(--mark)}
+.tnote{padding:10px 16px 14px;font-size:13.5px;color:var(--ink-2)}
+
+/* ---------- Checklist ---------- */
+.cl-top{position:sticky;top:calc(58px + env(safe-area-inset-top));z-index:10;display:flex;align-items:center;gap:12px;background:var(--surface);
+  border:1px solid var(--rule);border-radius:var(--radius-lg);padding:10px 12px 10px 16px;margin-bottom:14px}
+@media (min-width:820px){.cl-top{top:110px}}
+.bar{flex:1;height:8px;border-radius:99px;background:var(--sunk);overflow:hidden;border:1px solid var(--rule)}
+.bar i{display:block;height:100%;width:0;background:var(--teal);transition:width .25s ease}
+.cl-top output{font-weight:800;min-width:48px;text-align:right}
+.btn{border:1px solid var(--rule);background:var(--surface);border-radius:999px;padding:7px 14px;font-weight:700;font-size:14px}
+.btn.solid{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.cols{display:grid;grid-template-columns:1fr;gap:14px}
+@media(min-width:820px){.cols{grid-template-columns:1fr 1fr}}
+.sec{background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius-lg);overflow:hidden}
+.sec-h{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-top:5px solid var(--c)}
+.sec-h h2{margin:0;font-size:18px;font-weight:800;color:var(--c)}
+.sec-h span{font-size:13px;font-weight:700;color:var(--ink-2)}
+@media (prefers-color-scheme: dark){.sec-h h2{filter:brightness(1.5)}}
+.item{display:flex;gap:12px;align-items:flex-start;padding:11px 16px;border-top:1px solid var(--rule);cursor:pointer;-webkit-user-select:none;user-select:none}
+.item input{appearance:none;-webkit-appearance:none;width:26px;height:26px;flex:0 0 26px;margin:0;border:2px solid var(--rule);border-radius:7px;background:var(--surface);display:grid;place-items:center}
+.item input:checked{background:var(--c);border-color:var(--c)}
+.item input:checked::after{content:"";width:7px;height:13px;border:solid #fff;border-width:0 3px 3px 0;transform:translateY(-2px) rotate(45deg)}
+.item .t{font-weight:700}
+.item .s{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}
+.item .s span{font-size:13px;color:var(--ink-2);background:var(--sunk);border:1px solid var(--rule);border-radius:6px;padding:1px 7px}
+.item.done .t{color:var(--ink-2);text-decoration:line-through;text-decoration-thickness:1.5px}
+
+/* ---------- Ventilator ---------- */
+.vgrid{display:grid;grid-template-columns:1fr;gap:14px}
+@media(min-width:820px){.vgrid{grid-template-columns:1fr 1fr}}
+.vlist{margin:0;padding:0;list-style:none}
+.vlist li{display:flex;justify-content:space-between;gap:12px;padding:11px 16px;border-top:1px solid var(--rule);font-weight:600}
+.vlist li b{font-weight:800;font-size:18px}
+.vlist li.match{background:var(--mark-soft);box-shadow:inset 4px 0 0 var(--mark)}
+.plain li{display:block;font-weight:600}
+
+footer{max-width:760px;margin:0 auto;padding:6px 18px 30px;font-size:12.5px;line-height:1.5;color:var(--ink-2);text-align:center}
+
+#modal{position:fixed;inset:0;background:rgba(5,15,22,.55);display:none;align-items:flex-end;justify-content:center;z-index:60;padding:16px}
 #modal.on{display:flex}
-#modal .box{background:var(--card);border-radius:12px;padding:16px;max-width:360px;width:100%}
-#modal .row{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}
+@media(min-width:600px){#modal{align-items:center}}
+#modal .box{background:var(--surface);border-radius:16px;padding:18px;max-width:380px;width:100%}
+#modal p{margin:0;font-weight:700;font-size:17px}
+#modal .row{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
-<header>
-  <h1>Paediatric Airway Quick Reference</h1>
-  <nav id="nav">
-    <a href="#lookup" data-v="lookup">Lookup</a>
-    <a href="#tables" data-v="tables">Tables</a>
-    <a href="#checklist" data-v="checklist">Checklist</a>
-    <a href="#vent" data-v="vent">Ventilator</a>
-  </nav>
+<header class="appbar">
+  <div class="appbar-in">
+    <div class="mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M12 4v16M4 12h16"/></svg></div>
+    <div class="ttl"><b>Paediatric airway</b><span id="pt">No patient selected</span></div>
+    <button class="clear" id="clearPt" type="button" hidden>Clear</button>
+  </div>
 </header>
 
+<nav class="tabs" id="nav" aria-label="Sections">
+  <a href="#lookup" data-v="lookup"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>Lookup</a>
+  <a href="#tables" data-v="tables"><svg viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><path d="M3.5 9.5h17M3.5 14.5h17M9.5 9.5v10"/></svg>Tables</a>
+  <a href="#checklist" data-v="checklist"><svg viewBox="0 0 24 24"><rect x="4.5" y="3.5" width="15" height="17" rx="2"/><path d="M8.5 9l1.8 1.8L14 7.2M8.5 15.5h7"/></svg>Checklist</a>
+  <a href="#vent" data-v="vent"><svg viewBox="0 0 24 24"><path d="M3 12h3.5l2-5 3.5 10 2.5-7 1.5 2H21"/></svg>Ventilator</a>
+</nav>
+
 <main>
-  <div class="banner">ALWAYS HAVE ONE LARGER AND ONE SMALLER AVAILABLE</div>
+  <div class="warn" role="note"><svg viewBox="0 0 24 24"><path d="M12 3.5l9.5 16.5h-19z"/><path d="M12 10v4.5M12 17.4v.1"/></svg>Always have one larger and one smaller available</div>
 
   <!-- LOOKUP -->
   <section class="view" id="v-lookup">
-    <div class="card">
-      <div class="seg" id="mode">
-        <button data-m="infant" class="on">Under 1 year</button>
-        <button data-m="child">1 year and over</button>
+    <div class="lookup">
+      <div class="picker panel">
+        <div class="panel-b" style="padding-top:14px">
+          <div class="seg" id="mode" role="tablist">
+            <button data-m="infant" class="on" type="button">Under 1 year</button>
+            <button data-m="child" type="button">1 year and over</button>
+          </div>
+          <div id="ageBlock" hidden>
+            <div class="grp">Age in years, for the tube</div>
+            <div class="keys" id="ageChips"></div>
+          </div>
+          <div class="grp" id="wtLbl">Weight in kg</div>
+          <div class="keys" id="wtChips"></div>
+          <p class="hint" id="modeNote">Under 1 year, tube size goes by weight. From 1 year, it goes by age. Airway devices always go by weight.</p>
+        </div>
       </div>
-      <div id="ageBlock" hidden>
-        <div class="lbl">Age (years), for ETT size</div>
-        <div class="chips" id="ageChips"></div>
+
+      <div class="out">
+        <div class="panel">
+          <div class="panel-h"><h2>Endotracheal tube</h2><small id="ettBasis"></small></div>
+          <div id="ettOut"><div class="empty">Choose a weight or age to see tube sizes.</div></div>
+        </div>
+        <div class="panel">
+          <div class="panel-h"><h2>Airway devices</h2><small id="devBasis"></small></div>
+          <div id="devOut"><div class="empty">Choose a weight to see device sizes.</div></div>
+        </div>
+        <div class="panel">
+          <div class="panel-h"><h2>Accessories</h2><small>By tube internal diameter, mm</small></div>
+          <div class="idkeys"><div class="keys" id="idChips"></div></div>
+          <div id="accOut"><div class="empty">Choose a tube size above. It fills in once you pick a weight or age.</div></div>
+        </div>
+        <div class="panel">
+          <div class="panel-h"><h2>Intubating through an LMA</h2><small>1st-generation disposable</small></div>
+          <div id="lmaOut"><div class="empty">Choose a weight to match the LMA size.</div></div>
+        </div>
+        <div class="panel">
+          <div class="panel-h"><h2>Ventilator start</h2><small id="ventBasis"></small></div>
+          <div id="ventOut"><div class="empty">Choose a weight to see starting settings.</div></div>
+        </div>
       </div>
-      <div class="lbl" id="wtLbl">Weight (kg)</div>
-      <div class="chips" id="wtChips"></div>
-      <div class="note" id="modeNote">ETT size is by <b>weight</b> for under 1 year and by <b>age</b> for 1 year and over. The airway devices in Table 1 are always sized by weight.</div>
-    </div>
-
-    <div class="card">
-      <h2>Endotracheal tube</h2>
-      <div id="ettOut"><div class="empty">Select a weight or age.</div></div>
-    </div>
-
-    <div class="card">
-      <h2>Airway devices</h2>
-      <div id="devOut"><div class="empty">Select a weight.</div></div>
-    </div>
-
-    <div class="card">
-      <h2>Accessories for ETT internal diameter</h2>
-      <div class="chips" id="idChips"></div>
-      <div id="accOut" style="margin-top:10px"><div class="empty">Pick an ETT ID (pre-selected from the ETT size above).</div></div>
-    </div>
-
-    <div class="card">
-      <h2>Intubating through a 1st-generation disposable LMA</h2>
-      <div id="lmaOut"></div>
-    </div>
-
-    <div class="card">
-      <h2>Ventilator starting point</h2>
-      <div id="ventOut"><div class="empty">Select a weight.</div></div>
     </div>
   </section>
 
   <!-- TABLES -->
   <section class="view" id="v-tables">
-    <div class="card"><h2>Table 1: Airway devices</h2><div class="tablewrap" id="t1"></div>
-      <div class="note">Air-Q value in brackets = max size uncuffed ETT that passes through it. Where two sizes are shown (e.g. "3.5 / 5"), both appear for that weight on the sheet.</div></div>
-    <div class="card"><h2>Table 2: ET tubes (&lt;1y size on weight, &gt;1y size on age)</h2><div class="tablewrap" id="t2"></div>
-      <div class="note"><span class="star">*</span> Microcuff ETT should only be used in term neonates &gt;3 kg.</div></div>
-    <div class="card"><h2>Table 3: Difficult airway / accessory devices, by ETT internal diameter</h2><div class="tablewrap" id="t3"></div></div>
-    <div class="card"><h2>Table 4: Intubating through 1st-generation disposable LMA</h2><div class="tablewrap" id="t4"></div>
-      <div class="note">LMA under size 3 will not allow passage of pilot balloon.</div></div>
+    <div class="panel"><div class="panel-h"><h2>Table 1: Airway devices</h2></div><div class="tablewrap" id="t1"></div>
+      <div class="tnote">Air-Q: the number in brackets is the largest uncuffed tube that passes through it. Where two sizes are shown, both appear for that weight on the sheet.</div></div>
+    <div class="panel"><div class="panel-h"><h2>Table 2: Endotracheal tubes</h2><small>Under 1 year by weight, over 1 year by age</small></div><div class="tablewrap" id="t2"></div>
+      <div class="tnote"><span class="star">*</span> Microcuff tubes should only be used in term neonates over 3 kg.</div></div>
+    <div class="panel"><div class="panel-h"><h2>Table 3: Difficult airway and accessory devices</h2><small>By tube internal diameter</small></div><div class="tablewrap" id="t3"></div></div>
+    <div class="panel"><div class="panel-h"><h2>Table 4: Intubating through a 1st-generation disposable LMA</h2></div><div class="tablewrap" id="t4"></div>
+      <div class="tnote">An LMA under size 3 will not allow passage of the pilot balloon.</div></div>
   </section>
 
   <!-- CHECKLIST -->
   <section class="view" id="v-checklist">
-    <div class="progress"><div class="bar"><i id="pbar"></i></div><span id="ptext">0/0</span><button class="btn" id="resetBtn">Reset</button></div>
+    <div class="cl-top"><div class="bar"><i id="pbar"></i></div><output id="ptext">0/0</output><button class="btn" id="resetBtn" type="button">Clear ticks</button></div>
     <div class="cols" id="checkCols"></div>
   </section>
 
   <!-- VENT -->
   <section class="view" id="v-vent">
-    <div class="card vent">
-      <h2>Suggested initial ventilator settings</h2>
-      <dl>
-        <dt>Respiratory pressures (Pinsp &amp; PEEP)</dt>
-        <dd><ul><li>PIP 15–30 (aim for chest wall movement / Vt)</li><li>PEEP 5–8 (always have on)</li></ul></dd>
-        <dt>Respiratory rate</dt>
-        <dd><ul id="rrList"><li data-r="lt10">&lt;10 kg: 25–30</li><li data-r="gt20">&gt;20 kg: 20–25</li><li data-r="gt50">&gt;50 kg: 12–20</li></ul></dd>
-        <dt>Tidal volume</dt>
-        <dd><ul><li>5–8 ml/kg, aim for chest rise</li></ul></dd>
-        <dt>Difficult to ventilate?</dt>
-        <dd><ul><li>Has ETT moved / kinked?</li><li>Aspirate NG</li><li>Consider ETT saline + physio</li></ul></dd>
-      </dl>
-      <div class="note">Hamilton ventilator: use the smaller circuit if &lt;15 kg (from the checklist).</div>
+    <div class="vgrid">
+      <div class="panel"><div class="panel-h"><h2>Pressures</h2></div>
+        <ul class="vlist"><li>PIP <b>15–30</b></li><li style="font-weight:400;color:var(--ink-2);padding-top:0;border-top:0">Aim for chest wall movement and tidal volume</li><li>PEEP <b>5–8</b></li><li style="font-weight:400;color:var(--ink-2);padding-top:0;border-top:0">Always have PEEP on</li></ul></div>
+      <div class="panel"><div class="panel-h"><h2>Respiratory rate</h2><small>Breaths per minute</small></div>
+        <ul class="vlist" id="rrList"><li data-r="lt10">Under 10 kg <b>25–30</b></li><li data-r="gt20">Over 20 kg <b>20–25</b></li><li data-r="gt50">Over 50 kg <b>12–20</b></li></ul></div>
+      <div class="panel"><div class="panel-h"><h2>Tidal volume</h2></div>
+        <ul class="vlist"><li>Per kg <b>5–8 ml</b></li><li style="font-weight:400;color:var(--ink-2);padding-top:0;border-top:0">Aim for chest rise</li></ul></div>
+      <div class="panel"><div class="panel-h"><h2>Difficult to ventilate?</h2></div>
+        <ul class="vlist plain"><li>Has the tube moved or kinked?</li><li>Aspirate the NG tube</li><li>Consider ETT saline and physio</li></ul></div>
     </div>
+    <p class="hint" style="text-align:center">Hamilton ventilator: use the smaller circuit under 15 kg.</p>
   </section>
 </main>
 
 <footer>
-  Transcribed from the <i>Paediatric Airway Equipment Quick Reference</i> (Brighton Anaesthesia, University Hospitals Sussex; Dr A Kermode, Dr J Andren, Dr E Lillie, 2022) and the <i>Paediatric Intubation Checklist</i> (St Richard's Hospital, Chichester, v1.3 Apr '24). Values were read from photographs: check them against the printed originals before relying on this. It is an aide-memoire, not a substitute for clinical judgement or local guidance.
+  Transcribed from the <i>Paediatric Airway Equipment Quick Reference</i> (Brighton Anaesthesia, University Hospitals Sussex; Dr A Kermode, Dr J Andren, Dr E Lillie, 2022) and the <i>Paediatric Intubation Checklist</i> (St Richard's Hospital, Chichester, v1.3, April 2024). Values were read from photographs. Check them against the printed originals before relying on them. This is an aide-memoire, not a substitute for clinical judgement or local guidance.
 </footer>
 
-<div id="modal"><div class="box"><div id="modalText">Clear all ticks?</div><div class="row"><button class="btn" id="mNo">Cancel</button><button class="btn solid" id="mYes">Clear</button></div></div></div>
+<div id="modal" role="dialog" aria-modal="true"><div class="box"><p>Clear all ticks on the checklist?</p><div class="row"><button class="btn" id="mNo" type="button">Keep ticks</button><button class="btn solid" id="mYes" type="button">Clear ticks</button></div></div></div>
 
 <script>
 (function(){
@@ -300,13 +409,14 @@ var CHECK = [
  ]}
 ];
 
+
+
 // ---------- helpers ----------
 function $(id){return document.getElementById(id)}
 function el(tag,attrs,html){var e=document.createElement(tag);if(attrs)for(var k in attrs)e.setAttribute(k,attrs[k]);if(html!=null)e.innerHTML=html;return e}
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
 function store(k,v){try{if(v===undefined)return JSON.parse(localStorage.getItem(k));localStorage.setItem(k,JSON.stringify(v))}catch(e){return null}}
 
-// Build a table with vertical merging of identical consecutive cells per column
 function buildTable(headers,rows,mergeCols,keyCol){
   var t=el("table"),thead=el("thead"),tr=el("tr");
   headers.forEach(function(h){tr.appendChild(el("th",null,h))});
@@ -314,7 +424,7 @@ function buildTable(headers,rows,mergeCols,keyCol){
   var tb=el("tbody"),n=rows.length,nc=headers.length;
   var span=[];for(var c=0;c<nc;c++){span[c]=[];var i=0;while(i<n){var j=i+1;if(mergeCols.indexOf(c)>=0){while(j<n&&rows[j][c]===rows[i][c])j++}span[c][i]=j-i;for(var q=i+1;q<j;q++)span[c][q]=0;i=j}}
   for(var r=0;r<n;r++){var row=el("tr",{"data-key":rows[r][keyCol]});
-    for(c=0;c<nc;c++){if(span[c][r]===0)continue;var td=el("td",{rowspan:span[c][r],"data-c":c,"data-r0":r,"data-r1":r+span[c][r]-1},esc(rows[r][c]));if(c===keyCol)td.className="rowkey";row.appendChild(td)}
+    for(c=0;c<nc;c++){if(span[c][r]===0)continue;var td=el("td",{rowspan:span[c][r],"data-r0":r,"data-r1":r+span[c][r]-1},esc(rows[r][c]));if(c===keyCol)td.className="rowkey";row.appendChild(td)}
     tb.appendChild(row)}
   t.appendChild(tb);return t;
 }
@@ -333,124 +443,144 @@ var T2ALL = T2W.map(function(r){return [r[1],r[0]+" kg",r[2],r[3],r[4]]})
   .concat(T2A.map(function(r){return [r[0]+" yr",DASH,r[1],r[2],r[3]]}));
 $("t1").appendChild(buildTable(["Age (years)","Weight (kg)","Guedel","LMA","iGel","Laryngoscope blade / CMAC","Air-Q (max uncuffed ETT)"],
   T1.map(function(r){return [r[1],String(r[0]),r[2],r[3],r[4],r[5],r[6]]}),[0,2,3,4,5,6],1));
-$("t2").appendChild(buildTable(["Age","Weight","ETT size (Microcuff)","ETT size (uncuffed)","Oral ETT length (cm)"],T2ALL,[0,2,3],-1));
+$("t2").appendChild(buildTable(["Age","Weight","Microcuff","Uncuffed","Oral length (cm)"],T2ALL,[0,2,3],-1));
 $("t3").appendChild(buildTable(["ETT ID","Stylet","Bougie","Suction catheter","NGT","Fibreoptic: Storz","Fibreoptic: Olympus","Video bronchoscope","Cook airway exchange catheter"],T3,[1,2,3,4,5,6,7,8],0));
 $("t4").appendChild(buildTable(["LMA","Uncuffed ETT","Cuffed ETT"],T4,[],0));
-// table 2 row keys for highlighting
 (function(){var rows=$("t2").querySelector("tbody").rows;for(var i=0;i<rows.length;i++){rows[i].setAttribute("data-key",i<T2W.length?"w"+T2W[i][0]:"a"+T2A[i-T2W.length][0])}})();
 
 // ---------- lookup ----------
 var state = store("paw_state") || {mode:"infant",w:null,a:null,id:null};
-var idManual = false;
+var idManual = false, lastSig = "";
 
-function chipRow(container,items,sel,onPick){
+function keyRow(container,items,sel,onPick){
   container.innerHTML="";
-  items.forEach(function(it){var b=el("button",{type:"button"},it.html);if(String(it.v)===String(sel))b.className="on";b.onclick=function(){onPick(it.v)};container.appendChild(b)});
+  items.forEach(function(it){var b=el("button",{type:"button","aria-pressed":String(String(it.v)===String(sel)),"aria-label":it.aria},it.html);if(String(it.v)===String(sel))b.className="on";b.onclick=function(){onPick(it.v)};container.appendChild(b)});
 }
-function res(k,v,n,big){return '<div class="res'+(big?' big':'')+'"><div class="k">'+k+'</div><div class="v">'+v+'</div>'+(n?'<div class="n">'+n+'</div>':'')+'</div>'}
-
+function row(k,v,n,opts){opts=opts||{};return '<li'+(opts.wide?' class="wide"':'')+'><span class="k">'+k+'</span><span class="v">'+v+'</span>'+(n?'<span class="n'+(opts.alert?' alert':'')+'">'+n+'</span>':'')+'</li>'}
 function firstNum(s){var m=String(s).match(/\d+(\.\d+)?/);return m?m[0]:null}
+function orJoin(s){return esc(s).split(" / ").join('<span class="or">or</span>')}
 
 function render(){
   store("paw_state",state);
   document.querySelectorAll("#mode button").forEach(function(b){b.classList.toggle("on",b.getAttribute("data-m")===state.mode)});
   var infant = state.mode==="infant";
   $("ageBlock").hidden = infant;
-  $("wtLbl").textContent = infant ? "Weight (kg)" : "Weight (kg), for airway devices";
+  $("wtLbl").textContent = infant ? "Weight in kg" : "Weight in kg, for airway devices";
   var wts = infant ? T1.filter(function(r){return r[0]<=10}) : T1;
   if(infant && state.w>10) state.w=null;
-  chipRow($("wtChips"),wts.map(function(r){return {v:r[0],html:r[0]+"<small>kg</small>"}}),state.w,function(v){state.w=(state.w===v?null:v);idManual=false;render()});
-  chipRow($("ageChips"),T2A.map(function(r){return {v:r[0],html:r[0]+"<small>yr</small>"}}),state.a,function(v){state.a=(state.a===v?null:v);idManual=false;render()});
+  keyRow($("wtChips"),wts.map(function(r){return {v:r[0],html:r[0]+"<i>kg</i>",aria:r[0]+" kilograms"}}),state.w,function(v){state.w=(state.w===v?null:v);idManual=false;render()});
+  keyRow($("ageChips"),T2A.map(function(r){return {v:r[0],html:r[0]+"<i>y</i>",aria:r[0]+" years"}}),state.a,function(v){state.a=(state.a===v?null:v);idManual=false;render()});
+
+  // patient strip
+  var parts=[];
+  if(!infant && state.a!=null) parts.push(state.a+(state.a===1?" year":" years"));
+  if(state.w!=null) parts.push(state.w+" kg");
+  if(infant && parts.length) parts.push("under 1 year");
+  $("pt").textContent = parts.length ? parts.join(", ") : "No patient selected";
+  $("pt").classList.toggle("has",parts.length>0);
+  $("clearPt").hidden = !parts.length;
 
   // ETT
-  var ett=null,ettHtml="";
-  if(infant && state.w!=null){var r=T2W.filter(function(x){return x[0]===state.w})[0];if(r)ett={band:r[1],mc:r[2],un:r[3],len:r[4],basis:state.w+" kg ("+r[1].toLowerCase()+")",key:"w"+r[0]}}
-  if(!infant && state.a!=null){var r2=T2A.filter(function(x){return x[0]===state.a})[0];if(r2)ett={mc:r2[1],un:r2[2],len:r2[3],basis:"age "+r2[0]+" yr",key:"a"+r2[0]}}
+  var ett=null;
+  if(infant && state.w!=null){var r=T2W.filter(function(x){return x[0]===state.w})[0];if(r)ett={mc:r[2],un:r[3],len:r[4],basis:"By weight, "+state.w+" kg",key:"w"+r[0]}}
+  if(!infant && state.a!=null){var r2=T2A.filter(function(x){return x[0]===state.a})[0];if(r2)ett={mc:r2[1],un:r2[2],len:r2[3],basis:"By age, "+r2[0]+(r2[0]===1?" year":" years"),key:"a"+r2[0]}}
+  $("ettBasis").textContent = ett?ett.basis:"";
   if(ett){
-    ettHtml='<div class="results">'+
-      res("Microcuff (cuffed)",esc(ett.mc),ett.mc.indexOf("*")>=0?'<span class="star">*</span> Only in term neonates &gt;3 kg':"")+
-      res("Uncuffed",esc(ett.un),ett.un===DASH?"Not given on sheet for this age":"")+
-      res("Oral ETT length",esc(ett.len)+" cm","")+
-      '</div><div class="note">Based on <b>'+esc(ett.basis)+'</b>. Have ± half a size ready.</div>';
-  } else ettHtml='<div class="empty">'+(infant?"Select a weight.":"Select an age.")+'</div>';
-  $("ettOut").innerHTML=ettHtml;
+    var mcStar = ett.mc.indexOf("*")>=0;
+    $("ettOut").innerHTML='<div class="readout">'+
+      '<div class="primary"><div class="k">Microcuff</div><div class="v">'+esc(ett.mc.replace("*",""))+(mcStar?'<span class="star">*</span>':'')+'</div>'+(mcStar?'<div class="n"><span class="star">*</span> Term neonates over 3 kg only</div>':(ett.mc===DASH?'<div class="n">Not listed</div>':''))+'</div>'+
+      '<div><div class="k">Uncuffed</div><div class="v'+(ett.un.length>3?' long':'')+'">'+esc(ett.un.replace(" – ","–"))+'</div>'+(ett.un===DASH?'<div class="n">Not listed for this age</div>':'')+'</div>'+
+      '<div><div class="k">Oral length</div><div class="v">'+esc(ett.len)+'<small>cm</small></div></div>'+
+      '</div><div class="foot">Have half a size up and down ready.</div>';
+  } else $("ettOut").innerHTML='<div class="empty">'+(infant?"Choose a weight to see tube sizes.":"Choose an age to see tube sizes.")+'</div>';
 
   // Devices
   var d = state.w!=null ? T1.filter(function(x){return x[0]===state.w})[0] : null;
+  $("devBasis").textContent = d ? d[0]+" kg, sheet age band "+d[1].toLowerCase() : "";
   if(d){
-    var g=d[2].split(" / ").map(function(s){return '<span class="swatch" style="background:var('+GUEDEL_COL[s]+')"></span>'+s}).join(" or ");
-    var gn=d[2].split(" / ").map(function(s){return GUEDEL_NOTE[s]}).filter(Boolean).join("; ");
+    var g=d[2].split(" / ").map(function(s){return '<span class="chip" style="background:var('+GUEDEL_COL[s]+')"></span>'+s}).join('<span class="or">or</span>');
+    var gn=d[2].split(" / ").map(function(s){return GUEDEL_NOTE[s]?("Size "+s+" is "+GUEDEL_NOTE[s]):null}).filter(Boolean).join(". ");
     var aq=d[6].match(/^([\d.]+) \(([\d.]+)\)$/);
-    $("devOut").innerHTML='<div class="results">'+
-      res("Laryngoscope / CMAC",esc(d[5]),"",true)+
-      res("Guedel",g,gn)+
-      res("LMA",esc(d[3]),"")+
-      res("iGel",esc(d[4]),d[4]===DASH?"Not given on sheet for 1 kg":(d[4].indexOf("/")>=0?"Both sizes span this weight":""))+
-      res("Air-Q",aq?aq[1]:esc(d[6]),aq?"Max uncuffed ETT through it: "+aq[2]:"")+
-      '</div><div class="note">Weight <b>'+d[0]+' kg</b> (age band on sheet: '+esc(d[1])+').</div>';
-  } else $("devOut").innerHTML='<div class="empty">Select a weight.</div>';
+    $("devOut").innerHTML='<ul class="spec">'+
+      row("Laryngoscope / CMAC",esc(d[5]))+
+      row("Guedel",g,gn)+
+      row("LMA",esc(d[3]))+
+      row("iGel",orJoin(d[4]),d[4]===DASH?"Not listed for 1 kg":(d[4].indexOf("/")>=0?"Both sizes span this weight on the sheet":""))+
+      row("Air-Q",aq?aq[1]:esc(d[6]),aq?"Largest uncuffed tube through it: "+aq[2]:"")+
+      '</ul>';
+  } else $("devOut").innerHTML='<div class="empty">Choose a weight to see device sizes.</div>';
 
   // Accessory ID
-  if(!idManual){ var auto=null; if(ett){auto=firstNum(ett.mc)||firstNum(ett.un)} if(auto && !T3.some(function(x){return x[0]===auto}))auto=null; state.id=auto }
-  chipRow($("idChips"),T3.map(function(r){return {v:r[0],html:r[0]+"<small>mm ID</small>"}}),state.id,function(v){state.id=(state.id===v?null:v);idManual=true;render()});
+  if(!idManual){ var auto=null; if(ett){auto=firstNum(ett.mc.replace("*",""))||firstNum(ett.un)} if(auto && !T3.some(function(x){return x[0]===auto}))auto=null; state.id=auto }
+  keyRow($("idChips"),T3.map(function(r){return {v:r[0],html:r[0],aria:"Tube "+r[0]+" millimetres"}}),state.id,function(v){state.id=(state.id===v?null:v);idManual=true;render()});
   var a = state.id ? T3.filter(function(x){return x[0]===state.id})[0] : null;
   if(a){
-    $("accOut").innerHTML='<div class="results">'+
-      res("Stylet",a[1])+res("Bougie",a[2])+res("Suction catheter",a[3])+res("NGT",a[4])+
-      res("Fibreoptic: Storz",a[5],a[5]===DASH?"No Storz scope listed for ID 3":"")+res("Fibreoptic: Olympus",a[6])+
-      res("Video bronchoscope",esc(a[7].split(" — ")[0]),a[7].indexOf(" — ")>=0?'<b class="star">'+esc(a[7].split(" — ")[1])+'</b>':"",true)+res("Cook airway exchange catheter",a[8])+
-      '</div><div class="note">For ETT ID <b>'+a[0]+' mm</b>.'+(idManual?'':' Auto-selected from the ETT size; tap another size to change.')+'</div>';
-  } else $("accOut").innerHTML='<div class="empty">Pick an ETT ID (it is pre-selected once you choose a weight or age). For a range such as 3 – 3.5, the lower size is pre-selected.</div>';
+    var vb=a[7].split(" — ");
+    $("accOut").innerHTML='<ul class="spec">'+
+      row("Stylet",a[1])+row("Bougie",a[2])+row("Suction catheter",a[3])+row("NG tube",a[4])+
+      row("Fibreoptic, Storz",a[5],a[5]===DASH?"No Storz scope listed for a 3.0 tube":"")+row("Fibreoptic, Olympus",a[6])+
+      row("Video bronchoscope",esc(vb[0]),vb[1]?esc(vb[1].charAt(0).toUpperCase()+vb[1].slice(1)):"",{wide:true,alert:!!vb[1]})+
+      row("Cook airway exchange catheter",a[8])+
+      '</ul><div class="foot">For a <b>'+a[0]+' mm</b> tube.'+(idManual?'':' Picked from the Microcuff size; tap another size to change it.')+'</div>';
+  } else $("accOut").innerHTML='<div class="empty">Choose a tube size above. It fills in once you pick a weight or age.</div>';
 
   // LMA intubation
   var lmaSize = d ? d[3] : null;
   var lrow = lmaSize ? T4.filter(function(x){return x[0]===lmaSize})[0] : null;
   if(lrow){
-    $("lmaOut").innerHTML='<div class="results">'+res("LMA",lrow[0])+res("Uncuffed ETT through it",lrow[1])+res("Cuffed ETT through it",lrow[2],lrow[2]===DASH?"LMA under size 3 will not allow passage of pilot balloon":"")+'</div>';
+    $("lmaOut").innerHTML='<ul class="spec">'+row("LMA size",lrow[0])+row("Uncuffed tube through it",lrow[1])+
+      row("Cuffed tube through it",lrow[2],lrow[2]===DASH?"An LMA under size 3 will not let the pilot balloon through":"",{alert:lrow[2]===DASH})+'</ul>';
   } else if(d){
     $("lmaOut").innerHTML='<div class="empty">LMA size '+esc(lmaSize)+' is not listed in Table 4.</div>';
-  } else $("lmaOut").innerHTML='<div class="empty">Select a weight to match the LMA size.</div>';
+  } else $("lmaOut").innerHTML='<div class="empty">Choose a weight to match the LMA size.</div>';
 
   // Vent
   if(state.w!=null){
     var w=state.w, rr = w<10?"25–30":(w>50?"12–20":(w>20?"20–25":null));
-    var rrNote = w<10?"&lt;10 kg":(w>50?"&gt;50 kg":(w>20?"&gt;20 kg":"The sheet gives no rate for 10–20 kg"));
-    var vtLo=Math.round(w*5), vtHi=Math.round(w*8);
-    $("ventOut").innerHTML='<div class="results">'+
-      res("PIP",'15–30',"Aim for chest wall movement / Vt")+res("PEEP","5–8","Always have on")+
-      res("Resp rate",rr||DASH,rrNote)+
-      res("Tidal volume",vtLo+"–"+vtHi+" ml","5–8 ml/kg × "+w+" kg (calculated)")+'</div>';
+    var rrNote = w<10?"Under 10 kg":(w>50?"Over 50 kg":(w>20?"Over 20 kg":"The sheet gives no rate for 10–20 kg"));
+    $("ventBasis").textContent = w+" kg";
+    $("ventOut").innerHTML='<ul class="spec">'+
+      row("PIP","15–30","Aim for chest wall movement and tidal volume")+row("PEEP","5–8","Always have PEEP on")+
+      row("Respiratory rate",rr||DASH,rrNote)+
+      row("Tidal volume",Math.round(w*5)+"–"+Math.round(w*8)+" ml","Calculated: 5–8 ml/kg × "+w+" kg")+'</ul>';
     document.querySelectorAll("#rrList li").forEach(function(li){var k=li.getAttribute("data-r");li.classList.toggle("match",(k==="lt10"&&w<10)||(k==="gt20"&&w>20&&w<=50)||(k==="gt50"&&w>50))});
-  } else { $("ventOut").innerHTML='<div class="empty">Select a weight.</div>'; document.querySelectorAll("#rrList li").forEach(function(li){li.classList.remove("match")}) }
+  } else { $("ventBasis").textContent=""; $("ventOut").innerHTML='<div class="empty">Choose a weight to see starting settings.</div>'; document.querySelectorAll("#rrList li").forEach(function(li){li.classList.remove("match")}) }
 
-  // Table highlights
   highlight($("t1"),state.w);
   highlight($("t2"),ett?ett.key:null);
   highlight($("t3"),state.id);
   highlight($("t4"),lrow?lrow[0]:null);
+
+  // brief flash on the readout when the answer changes
+  var sig=[state.mode,state.w,state.a].join("|");
+  if(lastSig && sig!==lastSig){["ettOut","devOut"].forEach(function(id){var n=$(id);n.classList.remove("flash");void n.offsetWidth;n.classList.add("flash")})}
+  lastSig=sig;
 }
 document.querySelectorAll("#mode button").forEach(function(b){b.onclick=function(){state.mode=b.getAttribute("data-m");idManual=false;render()}});
+$("clearPt").onclick=function(){state.w=null;state.a=null;state.id=null;idManual=false;render()};
 
 // ---------- checklist ----------
 var ticks = store("paw_ticks") || {};
 function renderChecklist(){
   var cols=$("checkCols");cols.innerHTML="";var total=0,done=0;
   CHECK.forEach(function(sec,si){
-    var card=el("div",{"class":"card check-sec",style:"--c:"+sec.c});card.appendChild(el("h2",null,esc(sec.t)));
+    var card=el("div",{"class":"sec",style:"--c:"+sec.c});
+    var secDone=0;sec.items.forEach(function(it,ii){if(ticks[si+"-"+ii])secDone++});
+    card.appendChild(el("div",{"class":"sec-h"},'<h2>'+esc(sec.t)+'</h2><span>'+secDone+' of '+sec.items.length+'</span>'));
     sec.items.forEach(function(it,ii){
       var id=si+"-"+ii,on=!!ticks[id];total++;if(on)done++;
-      var lab=el("label",{"class":"check-item"+(on?" done":"")});
+      var lab=el("label",{"class":"item"+(on?" done":"")});
       var cb=el("input",{type:"checkbox"});cb.checked=on;
       cb.onchange=function(){if(cb.checked)ticks[id]=1;else delete ticks[id];store("paw_ticks",ticks);renderChecklist()};
       lab.appendChild(cb);
-      lab.appendChild(el("div",null,'<div class="t">'+esc(it[0])+'</div>'+(it[1]?'<div class="s">'+esc(it[1])+'</div>':'')));
+      lab.appendChild(el("div",null,'<div class="t">'+esc(it[0])+'</div>'+(it[1]?'<div class="s">'+esc(it[1]).split(" · ").map(function(x){return '<span>'+x+'</span>'}).join("")+'</div>':'')));
       card.appendChild(lab);
     });
     cols.appendChild(card);
   });
   $("ptext").textContent=done+"/"+total;$("pbar").style.width=(total?100*done/total:0)+"%";
 }
-$("resetBtn").onclick=function(){$("modal").classList.add("on")};
+$("resetBtn").onclick=function(){$("modal").classList.add("on");$("mNo").focus()};
 $("mNo").onclick=function(){$("modal").classList.remove("on")};
 $("mYes").onclick=function(){ticks={};store("paw_ticks",ticks);renderChecklist();$("modal").classList.remove("on")};
 
@@ -458,13 +588,12 @@ $("mYes").onclick=function(){ticks={};store("paw_ticks",ticks);renderChecklist()
 var VIEWS=["lookup","tables","checklist","vent"];
 function route(){var h=(location.hash||"").replace("#","");if(VIEWS.indexOf(h)<0)h="lookup";
   VIEWS.forEach(function(v){$("v-"+v).classList.toggle("on",v===h)});
-  document.querySelectorAll("#nav a").forEach(function(a){a.classList.toggle("on",a.getAttribute("data-v")===h)});
+  document.querySelectorAll("#nav a").forEach(function(a){var on=a.getAttribute("data-v")===h;a.classList.toggle("on",on);if(on)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current")});
   window.scrollTo(0,0)}
 window.addEventListener("hashchange",route);
 
 render();renderChecklist();route();
-// Offline support when served over https (GitHub Pages). Silently skipped elsewhere.
-if("serviceWorker" in navigator && location.protocol==="https:"){
+if("serviceWorker" in navigator && location.protocol==="https:" && /github\.io$/.test(location.hostname)){
   window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){})});
 }
 })();
