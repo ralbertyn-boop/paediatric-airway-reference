@@ -192,7 +192,7 @@ footer{max-width:760px;margin:0 auto;padding:6px 18px 30px;font-size:12.5px;line
 .pbtn[hidden]{display:none}
 .pbtn svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 @media (max-width:380px){.pbtn span{display:none}}
-.print-only{display:none}
+.print-only,.pv-top{display:none}
 
 @media print{
   @page{size:A4 landscape;margin:8mm}
@@ -244,12 +244,20 @@ footer{max-width:760px;margin:0 auto;padding:6px 18px 30px;font-size:12.5px;line
   #v-checklist .sec-h h2{font-size:11.5pt}
   #v-checklist .sec{margin:0}
   /* Landscape A4: Tables tab fits on one page */
-  #v-tables.on{display:grid!important;grid-template-columns:1.05fr 1fr;gap:5px 6px;align-items:start}
+  /* Print every tab, one landscape page each (Lookup only when a patient is selected) */
+  .view{display:block!important}
+  .view:not(#v-vent){break-after:page;page-break-after:always}
+  #v-lookup.noprint{display:none!important}
+  main > .warn{display:none!important}
+  .pv-top{display:block!important}
+  .pv-top .warn{display:flex!important}
+  #v-tables{display:grid!important;grid-template-columns:1.05fr 1fr;gap:5px 6px;align-items:start}
+  #v-tables .pv-top{grid-column:1/-1;grid-row:1}
   #v-tables .panel{margin:0;break-inside:avoid;page-break-inside:avoid}
-  #v-tables .panel:nth-of-type(1){grid-column:1;grid-row:1}
-  #v-tables .panel:nth-of-type(2){grid-column:2;grid-row:1}
-  #v-tables .panel:nth-of-type(3){grid-column:2;grid-row:2}
-  #v-tables .panel:nth-of-type(4){grid-column:1;grid-row:2}
+  #v-tables .tp1{grid-column:1;grid-row:2}
+  #v-tables .tp2{grid-column:2;grid-row:2}
+  #v-tables .tp3{grid-column:2;grid-row:3}
+  #v-tables .tp4{grid-column:1;grid-row:3}
   #v-tables .panel-h{padding:3px 6px 1px}
   #v-tables .panel-h h2{font-size:9pt}
   #v-tables .panel-h small{font-size:7pt}
@@ -298,7 +306,6 @@ footer{max-width:760px;margin:0 auto;padding:6px 18px 30px;font-size:12.5px;line
 </nav>
 
 <main>
-  <div class="print-only print-head"><b>Paediatric Intubation</b><span id="printMeta"></span></div>
   <div class="warn" role="note"><svg viewBox="0 0 24 24"><path d="M12 3.5l9.5 16.5h-19z"/><path d="M12 10v4.5M12 17.4v.1"/></svg>Always have one larger and one smaller available</div>
 
   <!-- LOOKUP -->
@@ -348,12 +355,12 @@ footer{max-width:760px;margin:0 auto;padding:6px 18px 30px;font-size:12.5px;line
 
   <!-- TABLES -->
   <section class="view" id="v-tables">
-    <div class="panel"><div class="panel-h"><h2>Table 1: Airway devices</h2></div><div class="tablewrap" id="t1"></div>
+    <div class="panel tp1"><div class="panel-h"><h2>Table 1: Airway devices</h2></div><div class="tablewrap" id="t1"></div>
       <div class="tnote">Air-Q: the number in brackets is the largest uncuffed tube that passes through it. Where two sizes are shown, both appear for that weight on the sheet.</div></div>
-    <div class="panel"><div class="panel-h"><h2>Table 2: Endotracheal tubes</h2><small>Under 1 year by weight, over 1 year by age</small></div><div class="tablewrap" id="t2"></div>
+    <div class="panel tp2"><div class="panel-h"><h2>Table 2: Endotracheal tubes</h2><small>Under 1 year by weight, over 1 year by age</small></div><div class="tablewrap" id="t2"></div>
       <div class="tnote"><span class="star">*</span> Microcuff tubes should only be used in term neonates over 3 kg.</div></div>
-    <div class="panel"><div class="panel-h"><h2>Table 3: Difficult airway and accessory devices</h2><small>By tube internal diameter</small></div><div class="tablewrap" id="t3"></div></div>
-    <div class="panel"><div class="panel-h"><h2>Table 4: Intubating through a 1st-generation disposable LMA</h2></div><div class="tablewrap" id="t4"></div>
+    <div class="panel tp3"><div class="panel-h"><h2>Table 3: Difficult airway and accessory devices</h2><small>By tube internal diameter</small></div><div class="tablewrap" id="t3"></div></div>
+    <div class="panel tp4"><div class="panel-h"><h2>Table 4: Intubating through a 1st-generation disposable LMA</h2></div><div class="tablewrap" id="t4"></div>
       <div class="tnote">An LMA under size 3 will not allow passage of the pilot balloon.</div></div>
   </section>
 
@@ -572,6 +579,7 @@ function render(){
   $("pt").textContent = parts.length ? parts.join(", ") : "No patient selected";
   $("pt").classList.toggle("has",parts.length>0);
   $("clearPt").hidden = !parts.length;
+  $("v-lookup").classList.toggle("noprint",!parts.length);
 
   // ETT
   var ett=null;
@@ -692,12 +700,18 @@ window.addEventListener("hashchange",route);
   var canPrint = typeof window.print==="function";
   try{ if(window.self!==window.top) canPrint=false }catch(e){ canPrint=false }
   var b=$("printBtn"); b.hidden=!canPrint;
-  var names={lookup:"Lookup",tables:"Tables",checklist:"Checklist",vent:"Ventilator"};
-  function view(){var h=(location.hash||"").replace("#","");return names[h]?h:"lookup"}
+  var names={lookup:"Lookup",tables:"Tables",checklist:"Checklist",vent:"Ventilator"}, ORDER=["lookup","tables","checklist","vent"];
+  // A heading and the safety warning at the top of every printed page
+  var warnHtml=document.querySelector("main > .warn").outerHTML;
+  ORDER.forEach(function(v){
+    var top=el("div",{"class":"pv-top"},'<div class="print-head"><b>Paediatric Intubation</b><span class="pmeta" data-v="'+v+'"></span></div>'+warnHtml);
+    var sec=$("v-"+v); sec.insertBefore(top,sec.firstChild);
+  });
   function meta(){
-    var h=view(), pt=$("pt").textContent, d=new Date();
+    var pt=$("pt").textContent, d=new Date();
     var when=d.toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"})+" "+d.toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"});
-    $("printMeta").textContent=names[h]+(h==="lookup"||h==="vent"?", "+pt:"")+". Printed "+when;
+    document.querySelectorAll(".pmeta").forEach(function(n){var v=n.getAttribute("data-v");
+      n.textContent=names[v]+((v==="lookup"||v==="vent")&&$("pt").classList.contains("has")?", "+pt:"")+". Printed "+when});
   }
   window.addEventListener("beforeprint",meta);
 
@@ -738,7 +752,7 @@ window.addEventListener("hashchange",route);
   };
   function pdfFallback(){
     var W=1062; // A4 landscape printable width (281 mm) at 96 dpi
-    setSheet("Making a PDF to print…","This phone didn't open the print dialog from the app, so the app is making a PDF of this page instead.",false);
+    setSheet("Making a PDF to print…","This phone didn't open the print dialog from the app, so the app is making a PDF of all the pages instead.",false);
     var frame=document.createElement("iframe");
     frame.setAttribute("aria-hidden","true");
     frame.style.cssText="position:fixed;left:-20000px;top:0;width:"+W+"px;height:800px;border:0;visibility:hidden";
@@ -752,20 +766,30 @@ window.addEventListener("hashchange",route);
       body.querySelectorAll('input[type="checkbox"]').forEach(function(n){
         var sp=doc.createElement("span");sp.className="cbx";sp.textContent=n.hasAttribute("checked")?"\u2713":"";n.replaceWith(sp)});
       doc.open();
-      doc.write('<!DOCTYPE html><html lang="en-GB"><head><meta charset="utf-8">'+heads+'<style>'+printCss()+'\nhtml,body{width:'+W+'px;margin:0}\n#v-lookup .out{columns:auto!important;display:grid!important;grid-template-columns:repeat(3,1fr);gap:8px;align-items:start}\n#v-lookup .out .panel{display:block!important;margin:0!important}\n.cbx{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;flex:0 0 16px;border:1.5px solid #000;border-radius:4px;font-size:12px;font-weight:800;line-height:1}</style></head><body>'+body.innerHTML+'</body></html>');
+      doc.write('<!DOCTYPE html><html lang="en-GB"><head><meta charset="utf-8">'+heads+'<style>'+printCss()+'\nhtml,body{width:'+W+'px;margin:0}\n#v-lookup .out{columns:auto!important;display:grid!important;grid-template-columns:repeat(3,1fr);gap:8px;align-items:start}\n#v-lookup .out .panel{display:block!important;margin:0!important}\n#v-lookup:not(.on),#v-tables:not(.on),#v-checklist:not(.on),#v-vent:not(.on){display:none!important}\n.view{break-after:auto!important}\n.cbx{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;flex:0 0 16px;border:1.5px solid #000;border-radius:4px;font-size:12px;font-weight:800;line-height:1}</style></head><body>'+body.innerHTML+'</body></html>');
       doc.close();
+      // one page per tab, in order; Lookup only when a patient is selected
+      var pages=ORDER.filter(function(v){return !(v==="lookup"&&$("v-lookup").classList.contains("noprint"))});
+      var canvases=[];
       return (doc.fonts&&doc.fonts.ready?doc.fonts.ready:Promise.resolve()).then(function(){
-        frame.style.height=doc.documentElement.scrollHeight+"px";
-        return window.html2canvas(doc.body,{scale:2,backgroundColor:"#ffffff",windowWidth:W,width:W,height:doc.body.scrollHeight,logging:false});
-      });
-    }).then(function(canvas){
+        return pages.reduce(function(p,v){return p.then(function(){
+          doc.querySelectorAll(".view").forEach(function(n){n.classList.toggle("on",n.id==="v-"+v)});
+          frame.style.height="800px";
+          frame.style.height=doc.documentElement.scrollHeight+"px";
+          return window.html2canvas(doc.body,{scale:2,backgroundColor:"#ffffff",windowWidth:W,width:W,height:doc.body.scrollHeight,logging:false}).then(function(c){canvases.push(c)});
+        })},Promise.resolve());
+      }).then(function(){return canvases});
+    }).then(function(canvases){
       var jsPDF=window.jspdf.jsPDF, pdf=new jsPDF({orientation:"landscape",unit:"mm",format:"a4"});
-      var pw=297-16, ph=210-16, r=Math.min(pw/canvas.width, ph/canvas.height);
-      var w=canvas.width*r, h=canvas.height*r;
-      pdf.addImage(canvas.toDataURL("image/jpeg",0.92),"JPEG",8+(pw-w)/2,8,w,h);
+      var pw=297-16, ph=210-16;
+      canvases.forEach(function(canvas,i){
+        if(i)pdf.addPage("a4","landscape");
+        var r=Math.min(pw/canvas.width, ph/canvas.height), w=canvas.width*r, h=canvas.height*r;
+        pdf.addImage(canvas.toDataURL("image/jpeg",0.92),"JPEG",8+(pw-w)/2,8,w,h);
+      });
       blob=pdf.output("blob");
       var d=new Date(), pad=function(n){return(n<10?"0":"")+n};
-      fname="paediatric-intubation-"+view()+"-"+d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate())+"-"+pad(d.getHours())+pad(d.getMinutes())+".pdf";
+      fname="paediatric-intubation-"+d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate())+"-"+pad(d.getHours())+pad(d.getMinutes())+".pdf";
       if(url)URL.revokeObjectURL(url); url=URL.createObjectURL(blob);
       var a=$("pdfDl"); a.href=url; a.setAttribute("download",fname);
       setSheet("PDF ready to print","On iPhone, tap Share or print PDF, then Print. On Android, download the PDF, open it, then choose Print from its menu.",true);

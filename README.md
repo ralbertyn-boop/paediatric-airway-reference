@@ -28,7 +28,7 @@ Only one value is calculated rather than copied: the tidal volume (5â€“8 ml/kg Ã
 
 ## Printing
 
-The Print button opens the device's print dialog in landscape A4. Some phones ignore print requests from home-screen apps, iPhone in particular. On those, the app makes a one-page PDF of the current tab instead, so you can use **Share or print PDF** (on iPhone, then tap Print) or **Download PDF**.
+The Print button prints every tab (Lookup, Tables, Checklist, Ventilator) in landscape A4, one page each. Lookup is skipped when no patient is selected. Some phones ignore print requests from home-screen apps, iPhone in particular. On those, the app makes the same pages as a PDF instead, so you can use **Share or print PDF** (on iPhone, then tap Print) or **Download PDF**.
 
 The PDF is made on the device with [html2canvas](https://github.com/niklasvh/html2canvas) and [jsPDF](https://github.com/parallax/jsPDF) (both MIT licence). Copies of both are kept in `vendor/` so this works offline.
 
