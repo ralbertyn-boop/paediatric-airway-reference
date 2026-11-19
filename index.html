@@ -188,6 +188,62 @@ footer{max-width:760px;margin:0 auto;padding:6px 18px 30px;font-size:12.5px;line
 #modal p{margin:0;font-weight:700;font-size:17px}
 #modal .row{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
 
+.pbtn{display:flex;align-items:center;gap:6px;border:1px solid #3a5163;background:transparent;color:#fff;border-radius:999px;padding:6px 12px;font-size:13px;font-weight:600}
+.pbtn[hidden]{display:none}
+.pbtn svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+@media (max-width:380px){.pbtn span{display:none}}
+.print-only{display:none}
+
+@media print{
+  @page{size:A4;margin:12mm}
+  :root{--paper:#fff;--surface:#fff;--sunk:#f1f3f5;--ink:#000;--ink-2:#333;--rule:#9aa5ad;--teal:#000;--teal-soft:#fff;--red:#000;--red-soft:#fff;--mark:#000;--mark-soft:#e6e6e6}
+  html,body{background:#fff!important;color:#000!important;font-size:11pt}
+  body{padding:0!important}
+  .appbar,.tabs,.picker,.idkeys,.cl-top,#modal,.hint{display:none!important}
+  .print-only{display:block}
+  .print-head{border-bottom:2px solid #000;padding:0 0 6px;margin:0 0 10px;display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+  .print-head b{font-size:15pt;font-weight:800}
+  .print-head span{font-size:10pt}
+  main{max-width:none;padding:0}
+  .lookup{display:block!important}
+  .warn{border:2px solid #000;border-left-width:6px;color:#000;background:#fff;margin-bottom:10px;padding:6px 10px}
+  .panel,.sec{border:1px solid #000;border-radius:6px;break-inside:avoid;page-break-inside:avoid;margin-bottom:8px;box-shadow:none}
+  .panel-h{padding:6px 10px 2px}
+  .panel-h h2{font-size:12pt}
+  .spec li,.vlist li,.item{padding:5px 10px}
+  .spec .v{font-size:13pt}
+  .readout > div{padding:6px 10px}
+  .readout .v{font-size:18pt}
+  .readout .k,.readout .n{font-size:9pt}
+  #v-lookup .panel{margin-bottom:6px}
+  #v-lookup .panel-h{padding:4px 10px 0}
+  .warn{font-size:10pt}
+  .empty{padding:6px 10px}
+  .tablewrap{overflow:visible}
+  table{min-width:0;font-size:8.5pt}
+  th,td{padding:3px 4px;border-color:#000}
+  th{background:#e6e6e6!important;color:#000}
+  tr.hi td.rowkey,td.hi{background:#e6e6e6!important;box-shadow:none;outline:2px solid #000;outline-offset:-2px}
+  .cols,.vgrid{display:block}
+  .item input{border-color:#000;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .item input:checked{background:#000;border-color:#000}
+  .sec-h{border-top:0;border-bottom:1px solid #000}
+  .sec-h h2{color:#000!important;filter:none!important}
+  .chip{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .flash{animation:none}
+  footer{font-size:8pt;padding:8px 0 0;color:#333}
+  .spec li,.vlist li{padding:3px 10px}
+  .spec .k{font-size:10pt}.spec .v{font-size:11.5pt}.spec .n{font-size:8.5pt}
+  .foot{padding:4px 10px 6px;font-size:9pt}
+  #v-checklist .cols{display:grid!important;grid-template-columns:1fr 1fr;gap:8px;align-items:start}
+  #v-checklist .item{padding:3px 8px;gap:8px;font-size:9.5pt}
+  #v-checklist .item input{width:16px;height:16px;flex:0 0 16px;border-radius:4px;border-width:1.5px}
+  #v-checklist .item input:checked::after{width:4px;height:8px;border-width:0 2px 2px 0}
+  #v-checklist .item .s span{font-size:8pt;padding:0 5px}
+  #v-checklist .sec-h{padding:5px 8px}
+  #v-checklist .sec-h h2{font-size:11.5pt}
+  #v-checklist .sec{margin:0}
+}
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -197,6 +253,7 @@ footer{max-width:760px;margin:0 auto;padding:6px 18px 30px;font-size:12.5px;line
     <div class="mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M12 4v16M4 12h16"/></svg></div>
     <div class="ttl"><b>Paediatric airway</b><span id="pt">No patient selected</span></div>
     <button class="clear" id="clearPt" type="button" hidden>Clear</button>
+    <button class="pbtn" id="printBtn" type="button" hidden aria-label="Print this page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 9V3.5h10V9"/><rect x="3.5" y="9" width="17" height="8" rx="2"/><path d="M7 14h10v6.5H7z"/></svg><span>Print</span></button>
   </div>
 </header>
 
@@ -208,6 +265,7 @@ footer{max-width:760px;margin:0 auto;padding:6px 18px 30px;font-size:12.5px;line
 </nav>
 
 <main>
+  <div class="print-only print-head"><b>Paediatric airway quick reference</b><span id="printMeta"></span></div>
   <div class="warn" role="note"><svg viewBox="0 0 24 24"><path d="M12 3.5l9.5 16.5h-19z"/><path d="M12 10v4.5M12 17.4v.1"/></svg>Always have one larger and one smaller available</div>
 
   <!-- LOOKUP -->
@@ -591,6 +649,23 @@ function route(){var h=(location.hash||"").replace("#","");if(VIEWS.indexOf(h)<0
   document.querySelectorAll("#nav a").forEach(function(a){var on=a.getAttribute("data-v")===h;a.classList.toggle("on",on);if(on)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current")});
   window.scrollTo(0,0)}
 window.addEventListener("hashchange",route);
+
+// ---------- print ----------
+// Shown only where the browser can print: the hosted app or the downloaded file, not inside a sandboxed preview frame.
+(function(){
+  var canPrint = typeof window.print==="function";
+  try{ if(window.self!==window.top) canPrint=false }catch(e){ canPrint=false }
+  var b=$("printBtn"); b.hidden=!canPrint;
+  var names={lookup:"Lookup",tables:"Tables",checklist:"Checklist",vent:"Ventilator"};
+  function meta(){
+    var h=(location.hash||"").replace("#","");if(!names[h])h="lookup";
+    var pt=$("pt").textContent, d=new Date();
+    var when=d.toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"})+" "+d.toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"});
+    $("printMeta").textContent=names[h]+(h==="lookup"||h==="vent"?", "+pt:"")+". Printed "+when;
+  }
+  window.addEventListener("beforeprint",meta);
+  b.onclick=function(){meta();try{window.print()}catch(e){}};
+})();
 
 render();renderChecklist();route();
 if("serviceWorker" in navigator && location.protocol==="https:" && /github\.io$/.test(location.hostname)){
