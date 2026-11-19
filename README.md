@@ -26,6 +26,12 @@ Only one value is calculated rather than copied: the tidal volume (5–8 ml/kg �
 2. iPhone: tap **Share**, then **Add to Home Screen**. Android: open the **⋮** menu, then **Install app** or **Add to Home screen**.
 3. Open it once while you are online. After that it works offline.
 
+## Printing
+
+The Print button opens the device's print dialog in landscape A4. Some phones ignore print requests from home-screen apps, iPhone in particular. On those, the app makes a one-page PDF of the current tab instead, so you can use **Share or print PDF** (on iPhone, then tap Print) or **Download PDF**.
+
+The PDF is made on the device with [html2canvas](https://github.com/niklasvh/html2canvas) and [jsPDF](https://github.com/parallax/jsPDF) (both MIT licence). Copies of both are kept in `vendor/` so this works offline.
+
 ## Updating
 
 1. Edit the data arrays near the top of the `<script>` block in `index.html` (`T1`, `T2W`, `T2A`, `T3`, `T4`, `CHECK`).

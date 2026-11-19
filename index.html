@@ -267,6 +267,16 @@ footer{max-width:760px;margin:0 auto;padding:6px 18px 30px;font-size:12.5px;line
   .warn svg{width:14px;height:14px;flex-basis:14px}
   footer{font-size:6.5pt;padding:4px 0 0;max-width:none}
 }
+#pdfSheet{position:fixed;inset:0;background:rgba(5,15,22,.55);display:none;align-items:flex-end;justify-content:center;z-index:60;padding:16px}
+#pdfSheet.on{display:flex}
+@media(min-width:600px){#pdfSheet{align-items:center}}
+#pdfSheet .box{background:var(--surface);border-radius:16px;padding:18px;max-width:420px;width:100%}
+#pdfSheet p{margin:0;font-weight:800;font-size:17px}
+#pdfSheet p.sub{font-weight:400;font-size:14.5px;color:var(--ink-2);margin-top:8px}
+#pdfSheet .row{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;margin-top:16px}
+#pdfSheet a.btn{text-decoration:none;color:var(--ink)}
+#pdfSheet a.btn[hidden],#pdfSheet button[hidden]{display:none}
+
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -374,6 +384,8 @@ footer{max-width:760px;margin:0 auto;padding:6px 18px 30px;font-size:12.5px;line
 </footer>
 
 <div id="modal" role="dialog" aria-modal="true"><div class="box"><p>Clear all ticks on the checklist?</p><div class="row"><button class="btn" id="mNo" type="button">Keep ticks</button><button class="btn solid" id="mYes" type="button">Clear ticks</button></div></div></div>
+
+<div id="pdfSheet" class="sheet" role="dialog" aria-modal="true" aria-labelledby="pdfTitle"><div class="box"><p id="pdfTitle"></p><p class="sub" id="pdfMsg"></p><div class="row"><button class="btn" id="pdfClose" type="button">Close</button><a class="btn" id="pdfDl" hidden>Download PDF</a><button class="btn solid" id="pdfShare" type="button" hidden>Share or print PDF</button></div></div></div>
 
 <script>
 (function(){
@@ -651,7 +663,7 @@ function renderChecklist(){
     sec.items.forEach(function(it,ii){
       var id=si+"-"+ii,on=!!ticks[id];total++;if(on)done++;
       var lab=el("label",{"class":"item"+(on?" done":"")});
-      var cb=el("input",{type:"checkbox"});cb.checked=on;
+      var cb=el("input",{type:"checkbox"});cb.checked=on;if(on)cb.setAttribute("checked","");
       cb.onchange=function(){if(cb.checked)ticks[id]=1;else delete ticks[id];store("paw_ticks",ticks);renderChecklist()};
       lab.appendChild(cb);
       lab.appendChild(el("div",null,'<div class="t">'+esc(it[0])+'</div>'+(it[1]?'<div class="s">'+esc(it[1]).split(" · ").map(function(x){return '<span>'+x+'</span>'}).join("")+'</div>':'')));
@@ -674,20 +686,94 @@ function route(){var h=(location.hash||"").replace("#","");if(VIEWS.indexOf(h)<0
 window.addEventListener("hashchange",route);
 
 // ---------- print ----------
-// Shown only where the browser can print: the hosted app or the downloaded file, not inside a sandboxed preview frame.
+// Tries the system print dialog first. Some phones (notably iPhone home-screen apps) ignore window.print()
+// without any error, so if no print dialog appears we build a one-page PDF and offer Share / Download instead.
 (function(){
   var canPrint = typeof window.print==="function";
   try{ if(window.self!==window.top) canPrint=false }catch(e){ canPrint=false }
   var b=$("printBtn"); b.hidden=!canPrint;
   var names={lookup:"Lookup",tables:"Tables",checklist:"Checklist",vent:"Ventilator"};
+  function view(){var h=(location.hash||"").replace("#","");return names[h]?h:"lookup"}
   function meta(){
-    var h=(location.hash||"").replace("#","");if(!names[h])h="lookup";
-    var pt=$("pt").textContent, d=new Date();
+    var h=view(), pt=$("pt").textContent, d=new Date();
     var when=d.toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"})+" "+d.toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"});
     $("printMeta").textContent=names[h]+(h==="lookup"||h==="vent"?", "+pt:"")+". Printed "+when;
   }
   window.addEventListener("beforeprint",meta);
-  b.onclick=function(){meta();try{window.print()}catch(e){}};
+
+  b.onclick=function(){
+    meta();
+    var fired=false; function on(){fired=true}
+    window.addEventListener("beforeprint",on);
+    try{window.print()}catch(e){}
+    setTimeout(function(){window.removeEventListener("beforeprint",on); if(!fired) pdfFallback();},1200);
+  };
+
+  // ----- PDF fallback -----
+  var LIBS=[["vendor/html2canvas.min.js","https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js",function(){return window.html2canvas}],
+            ["vendor/jspdf.umd.min.js","https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js",function(){return window.jspdf}]];
+  function loadScript(src){return new Promise(function(res,rej){var s=document.createElement("script");s.src=src;s.onload=res;s.onerror=rej;document.head.appendChild(s)})}
+  function loadLibs(){return LIBS.reduce(function(p,l){return p.then(function(){if(l[2]())return;return loadScript(l[0]).catch(function(){return loadScript(l[1])})})},Promise.resolve())}
+  function printCss(){
+    var out="";
+    Array.prototype.forEach.call(document.styleSheets,function(sh){var rules;try{rules=sh.cssRules}catch(e){return}
+      Array.prototype.forEach.call(rules||[],function(r){
+        if(r.media && /print/.test(r.media.mediaText)){Array.prototype.forEach.call(r.cssRules,function(ir){if(ir.type!==6)out+=ir.cssText+"\n"})}
+      })});
+    return out;
+  }
+  var sheet=$("pdfSheet"), blob=null, fname="", url=null;
+  function setSheet(title,msg,ready){
+    $("pdfTitle").textContent=title;$("pdfMsg").textContent=msg;
+    var canShare=false;
+    if(ready&&navigator.canShare){try{canShare=navigator.canShare({files:[new File([blob],fname,{type:"application/pdf"})]})}catch(e){}}
+    $("pdfShare").hidden=!(ready&&canShare);
+    $("pdfDl").hidden=!ready;
+    sheet.classList.add("on");
+  }
+  $("pdfClose").onclick=function(){sheet.classList.remove("on")};
+  $("pdfShare").onclick=function(){
+    var f=new File([blob],fname,{type:"application/pdf"});
+    navigator.share({files:[f],title:fname}).catch(function(){});
+  };
+  function pdfFallback(){
+    var W=1062; // A4 landscape printable width (281 mm) at 96 dpi
+    setSheet("Making a PDF to print…","This phone didn't open the print dialog from the app, so the app is making a PDF of this page instead.",false);
+    var frame=document.createElement("iframe");
+    frame.setAttribute("aria-hidden","true");
+    frame.style.cssText="position:fixed;left:-20000px;top:0;width:"+W+"px;height:800px;border:0;visibility:hidden";
+    document.body.appendChild(frame);
+    loadLibs().then(function(){
+      var doc=frame.contentDocument, heads="";
+      document.querySelectorAll('style,link[rel="stylesheet"]').forEach(function(n){heads+=n.outerHTML});
+      var body=document.body.cloneNode(true);
+      body.querySelectorAll("script,#pdfSheet,#modal,iframe").forEach(function(n){n.remove()});
+      // the PDF library can't draw CSS checkboxes: swap them for plain boxes with a tick
+      body.querySelectorAll('input[type="checkbox"]').forEach(function(n){
+        var sp=doc.createElement("span");sp.className="cbx";sp.textContent=n.hasAttribute("checked")?"\u2713":"";n.replaceWith(sp)});
+      doc.open();
+      doc.write('<!DOCTYPE html><html lang="en-GB"><head><meta charset="utf-8">'+heads+'<style>'+printCss()+'\nhtml,body{width:'+W+'px;margin:0}\n#v-lookup .out{columns:auto!important;display:grid!important;grid-template-columns:repeat(3,1fr);gap:8px;align-items:start}\n#v-lookup .out .panel{display:block!important;margin:0!important}\n.cbx{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;flex:0 0 16px;border:1.5px solid #000;border-radius:4px;font-size:12px;font-weight:800;line-height:1}</style></head><body>'+body.innerHTML+'</body></html>');
+      doc.close();
+      return (doc.fonts&&doc.fonts.ready?doc.fonts.ready:Promise.resolve()).then(function(){
+        frame.style.height=doc.documentElement.scrollHeight+"px";
+        return window.html2canvas(doc.body,{scale:2,backgroundColor:"#ffffff",windowWidth:W,width:W,height:doc.body.scrollHeight,logging:false});
+      });
+    }).then(function(canvas){
+      var jsPDF=window.jspdf.jsPDF, pdf=new jsPDF({orientation:"landscape",unit:"mm",format:"a4"});
+      var pw=297-16, ph=210-16, r=Math.min(pw/canvas.width, ph/canvas.height);
+      var w=canvas.width*r, h=canvas.height*r;
+      pdf.addImage(canvas.toDataURL("image/jpeg",0.92),"JPEG",8+(pw-w)/2,8,w,h);
+      blob=pdf.output("blob");
+      var d=new Date(), pad=function(n){return(n<10?"0":"")+n};
+      fname="paediatric-intubation-"+view()+"-"+d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate())+"-"+pad(d.getHours())+pad(d.getMinutes())+".pdf";
+      if(url)URL.revokeObjectURL(url); url=URL.createObjectURL(blob);
+      var a=$("pdfDl"); a.href=url; a.setAttribute("download",fname);
+      setSheet("PDF ready to print","On iPhone, tap Share or print PDF, then Print. On Android, download the PDF, open it, then choose Print from its menu.",true);
+    }).catch(function(err){
+      try{console.error("PDF fallback failed",err)}catch(e){}
+      setSheet("Couldn't make the PDF","Connect to the internet and try again. Or open this page in Safari or Chrome, rather than the home-screen app, and print from there.",false);
+    }).then(function(){frame.remove()});
+  }
 })();
 
 render();renderChecklist();route();

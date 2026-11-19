@@ -1,12 +1,14 @@
 // Offline cache. Bump VERSION whenever any file changes so devices pick up the update.
-const VERSION = "paw-v4";
+const VERSION = "paw-v5";
 const FILES = [
   "./",
   "./index.html",
   "./manifest.webmanifest",
   "./icons/icon-192.png",
   "./icons/icon-512.png",
-  "./icons/apple-touch-icon.png"
+  "./icons/apple-touch-icon.png",
+  "./vendor/html2canvas.min.js",
+  "./vendor/jspdf.umd.min.js"
 ];
 
 self.addEventListener("install", (e) => {
