@@ -390,7 +390,7 @@ footer{max-width:760px;margin:0 auto;padding:6px 18px 30px;font-size:12.5px;line
   Transcribed from the <i>Paediatric Airway Equipment Quick Reference</i> (Brighton Anaesthesia, University Hospitals Sussex; Dr A Kermode, Dr J Andren, Dr E Lillie, 2022) and the <i>Paediatric Intubation Checklist</i> (St Richard's Hospital, Chichester, v1.3, April 2024). Values were read from photographs. Check them against the printed originals before relying on them. This is an aide-memoire, not a substitute for clinical judgement or local guidance.
 </footer>
 
-<div id="modal" role="dialog" aria-modal="true"><div class="box"><p>Clear all ticks on the checklist?</p><div class="row"><button class="btn" id="mNo" type="button">Keep ticks</button><button class="btn solid" id="mYes" type="button">Clear ticks</button></div></div></div>
+<div id="modal" role="dialog" aria-modal="true"><div class="box"><p id="mText">Clear all ticks on the checklist?</p><div class="row"><button class="btn" id="mNo" type="button">Cancel</button><button class="btn solid" id="mYes" type="button">Clear ticks</button></div></div></div>
 
 <div id="pdfSheet" class="sheet" role="dialog" aria-modal="true" aria-labelledby="pdfTitle"><div class="box"><p id="pdfTitle"></p><p class="sub" id="pdfMsg"></p><div class="row"><button class="btn" id="pdfClose" type="button">Close</button><a class="btn" id="pdfDl" hidden>Download PDF</a><button class="btn solid" id="pdfShare" type="button" hidden>Share or print PDF</button></div></div></div>
 
@@ -578,7 +578,7 @@ function render(){
   if(infant && parts.length) parts.push("under 1 year");
   $("pt").textContent = parts.length ? parts.join(", ") : "No patient selected";
   $("pt").classList.toggle("has",parts.length>0);
-  $("clearPt").hidden = !parts.length;
+  updateClear();
   $("v-lookup").classList.toggle("noprint",!parts.length);
 
   // ETT
@@ -658,7 +658,16 @@ function render(){
   lastSig=sig;
 }
 document.querySelectorAll("#mode button").forEach(function(b){b.onclick=function(){state.mode=b.getAttribute("data-m");idManual=false;render()}});
-$("clearPt").onclick=function(){state.w=null;state.a=null;state.id=null;idManual=false;render()};
+// Header Clear: resets the patient AND every checklist tick (asks first)
+function updateClear(){var any=$("pt").classList.contains("has")||Object.keys(ticks||{}).length>0;$("clearPt").hidden=!any}
+var clearAll=false;
+function askClear(all){
+  clearAll=all;
+  $("mText").textContent=all?"Clear the patient and all checklist ticks?":"Clear all ticks on the checklist?";
+  $("mYes").textContent=all?"Clear all":"Clear ticks";
+  $("modal").classList.add("on");$("mNo").focus();
+}
+$("clearPt").onclick=function(){askClear(true)};
 
 // ---------- checklist ----------
 var ticks = store("paw_ticks") || {};
@@ -679,11 +688,16 @@ function renderChecklist(){
     });
     cols.appendChild(card);
   });
+  updateClear();
   $("ptext").textContent=done+"/"+total;$("pbar").style.width=(total?100*done/total:0)+"%";
 }
-$("resetBtn").onclick=function(){$("modal").classList.add("on");$("mNo").focus()};
+$("resetBtn").onclick=function(){askClear(false)};
 $("mNo").onclick=function(){$("modal").classList.remove("on")};
-$("mYes").onclick=function(){ticks={};store("paw_ticks",ticks);renderChecklist();$("modal").classList.remove("on")};
+$("mYes").onclick=function(){
+  ticks={};store("paw_ticks",ticks);
+  if(clearAll){state.w=null;state.a=null;state.id=null;idManual=false;render()}
+  renderChecklist();$("modal").classList.remove("on");
+};
 
 // ---------- routing ----------
 var VIEWS=["lookup","tables","checklist","vent"];
