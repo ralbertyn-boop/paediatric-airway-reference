@@ -1,6 +1,6 @@
 {
-  "name": "Paediatric Airway Quick Reference",
-  "short_name": "Paeds Airway",
+  "name": "Paediatric Intubation",
+  "short_name": "Paeds Intubation",
   "description": "Paediatric airway equipment sizes and intubation checklist, offline.",
   "start_url": "./",
   "scope": "./",

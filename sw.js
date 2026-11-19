@@ -1,5 +1,5 @@
 // Offline cache. Bump VERSION whenever any file changes so devices pick up the update.
-const VERSION = "paw-v3";
+const VERSION = "paw-v4";
 const FILES = [
   "./",
   "./index.html",

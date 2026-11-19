@@ -1,4 +1,4 @@
-# Paediatric Airway Quick Reference
+# Paediatric Intubation
 
 An offline web app for emergency paediatric airway reference. It is installable on phones and tablets.
 
