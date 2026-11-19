@@ -26,6 +26,10 @@ Only one value is calculated rather than copied: the tidal volume (5–8 ml/kg �
 2. iPhone: tap **Share**, then **Add to Home Screen**. Android: open the **⋮** menu, then **Install app** or **Add to Home screen**.
 3. Open it once while you are online. After that it works offline.
 
+## Tube-type guidance (RCUK 2025)
+
+The Lookup and Tables pages present cuffed tubes as the first choice, following Resuscitation Council UK 2025 Paediatric Life Support: use cuffed tracheal tubes for all children over 30 days corrected gestational age, and monitor and limit cuff pressure to the manufacturer's limit. Uncuffed tubes are shown for newborns, babies under 3 kg (no Microcuff size is listed below 3 kg), or when a cuffed tube won't pass. The cuffed formula (age ÷ 4 + 3.5, valid up to 8 years per ERC 2025) is shown alongside the sheet's size for ages 1–8. **All tube sizes are unchanged from the source sheet.** Neither the RCUK 2025 newborn guideline nor the ERC 2025 paediatric guideline gives a newborn tube-size table.
+
 ## Printing
 
 The Print button prints every tab (Lookup, Tables, Checklist, Ventilator) in landscape A4, one page each. Lookup is skipped when no patient is selected. Some phones ignore print requests from home-screen apps, iPhone in particular. On those, the app makes the same pages as a PDF instead, so you can use **Share or print PDF** (on iPhone, then tap Print) or **Download PDF**.

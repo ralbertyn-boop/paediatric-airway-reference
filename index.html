@@ -117,6 +117,8 @@ main{max-width:1080px;margin:0 auto;padding:16px 14px 28px}
 .foot{padding:10px 16px 14px;font-size:13.5px;color:var(--ink-2);border-top:1px solid var(--rule)}
 .foot b{color:var(--ink)}
 .star{color:var(--red);font-weight:800}
+.rcuk{background:var(--teal-soft);color:var(--ink)}
+.rcuk b{color:var(--teal)}
 
 /* ---------- Spec rows ---------- */
 .spec{margin:0;padding:0;list-style:none}
@@ -358,7 +360,7 @@ footer{max-width:760px;margin:0 auto;padding:6px 18px 30px;font-size:12.5px;line
     <div class="panel tp1"><div class="panel-h"><h2>Table 1: Airway devices</h2></div><div class="tablewrap" id="t1"></div>
       <div class="tnote">Air-Q: the number in brackets is the largest uncuffed tube that passes through it. Where two sizes are shown, both appear for that weight on the sheet.</div></div>
     <div class="panel tp2"><div class="panel-h"><h2>Table 2: Endotracheal tubes</h2><small>Under 1 year by weight, over 1 year by age</small></div><div class="tablewrap" id="t2"></div>
-      <div class="tnote"><span class="star">*</span> Microcuff tubes should only be used in term neonates over 3 kg.</div></div>
+      <div class="tnote rcuk"><b>RCUK 2025:</b> use cuffed tracheal tubes for all children over 30 days corrected gestational age, and monitor and limit cuff pressure to the manufacturer's limit. The cuffed formula age ÷ 4 + 3.5 remains valid up to 8 years (ERC 2025). Uncuffed tubes remain usual for newborns and babies under 3 kg.<br><span class="star">*</span> Microcuff tubes should only be used in term neonates over 3 kg.</div></div>
     <div class="panel tp3"><div class="panel-h"><h2>Table 3: Difficult airway and accessory devices</h2><small>By tube internal diameter</small></div><div class="tablewrap" id="t3"></div></div>
     <div class="panel tp4"><div class="panel-h"><h2>Table 4: Intubating through a 1st-generation disposable LMA</h2></div><div class="tablewrap" id="t4"></div>
       <div class="tnote">An LMA under size 3 will not allow passage of the pilot balloon.</div></div>
@@ -387,7 +389,7 @@ footer{max-width:760px;margin:0 auto;padding:6px 18px 30px;font-size:12.5px;line
 </main>
 
 <footer>
-  Transcribed from the <i>Paediatric Airway Equipment Quick Reference</i> (Brighton Anaesthesia, University Hospitals Sussex; Dr A Kermode, Dr J Andren, Dr E Lillie, 2022) and the <i>Paediatric Intubation Checklist</i> (St Richard's Hospital, Chichester, v1.3, April 2024). Values were read from photographs. Check them against the printed originals before relying on them. This is an aide-memoire, not a substitute for clinical judgement or local guidance.
+  Transcribed from the <i>Paediatric Airway Equipment Quick Reference</i> (Brighton Anaesthesia, University Hospitals Sussex; Dr A Kermode, Dr J Andren, Dr E Lillie, 2022) and the <i>Paediatric Intubation Checklist</i> (St Richard's Hospital, Chichester, v1.3, April 2024). Tube-type guidance updated to Resuscitation Council UK 2025 Paediatric Life Support; tube sizes are unchanged from the sheet. Values were read from photographs. Check them against the printed originals before relying on them. This is an aide-memoire, not a substitute for clinical judgement or local guidance.
 </footer>
 
 <div id="modal" role="dialog" aria-modal="true"><div class="box"><p id="mText">Clear all ticks on the checklist?</p><div class="row"><button class="btn" id="mNo" type="button">Cancel</button><button class="btn solid" id="mYes" type="button">Clear ticks</button></div></div></div>
@@ -543,7 +545,7 @@ var T2ALL = T2W.map(function(r){return [r[1],r[0]+" kg",r[2],r[3],r[4]]})
   .concat(T2A.map(function(r){return [r[0]+" yr",DASH,r[1],r[2],r[3]]}));
 $("t1").appendChild(buildTable(["Age (years)","Weight (kg)","Guedel","LMA","iGel","Laryngoscope blade / CMAC","Air-Q (max uncuffed ETT)"],
   T1.map(function(r){return [r[1],String(r[0]),r[2],r[3],r[4],r[5],r[6]]}),[0,2,3,4,5,6],1));
-$("t2").appendChild(buildTable(["Age","Weight","Microcuff","Uncuffed","Oral length (cm)"],T2ALL,[0,2,3],-1));
+$("t2").appendChild(buildTable(["Age","Weight","Cuffed (Microcuff), first choice","Uncuffed, newborns or if cuffed won't pass","Oral length (cm)"],T2ALL,[0,2,3],-1));
 $("t3").appendChild(buildTable(["ETT ID","Stylet","Bougie","Suction catheter","NGT","Fibreoptic: Storz","Fibreoptic: Olympus","Video bronchoscope","Cook airway exchange catheter"],T3,[1,2,3,4,5,6,7,8],0));
 $("t4").appendChild(buildTable(["LMA","Uncuffed ETT","Cuffed ETT"],T4,[],0));
 (function(){var rows=$("t2").querySelector("tbody").rows;for(var i=0;i<rows.length;i++){rows[i].setAttribute("data-key",i<T2W.length?"w"+T2W[i][0]:"a"+T2A[i-T2W.length][0])}})();
@@ -584,15 +586,22 @@ function render(){
   // ETT
   var ett=null;
   if(infant && state.w!=null){var r=T2W.filter(function(x){return x[0]===state.w})[0];if(r)ett={mc:r[2],un:r[3],len:r[4],basis:"By weight, "+state.w+" kg",key:"w"+r[0]}}
-  if(!infant && state.a!=null){var r2=T2A.filter(function(x){return x[0]===state.a})[0];if(r2)ett={mc:r2[1],un:r2[2],len:r2[3],basis:"By age, "+r2[0]+(r2[0]===1?" year":" years"),key:"a"+r2[0]}}
+  if(!infant && state.a!=null){var r2=T2A.filter(function(x){return x[0]===state.a})[0];if(r2)ett={age:r2[0],mc:r2[1],un:r2[2],len:r2[3],basis:"By age, "+r2[0]+(r2[0]===1?" year":" years"),key:"a"+r2[0]}}
   $("ettBasis").textContent = ett?ett.basis:"";
   if(ett){
-    var mcStar = ett.mc.indexOf("*")>=0;
+    var mcStar = ett.mc.indexOf("*")>=0, hasCuffed = ett.mc!==DASH;
+    // RCUK 2025: cuffed tubes for all children over 30 days corrected gestational age.
+    // No Microcuff size below 3 kg, so uncuffed is the first choice there.
+    var cuffPrimary = hasCuffed;
+    var cuffNote = !hasCuffed ? "Not for under 3 kg"
+      : (mcStar ? '<span class="star">*</span> Term neonates over 3 kg only' : "First choice over 30 days corrected age");
+    if(ett.age!=null && ett.age<=8){ var fv=ett.age/4+3.5; cuffNote += '<br>Formula age ÷ 4 + 3.5 = '+(Math.round(fv*100)/100) }
+    var unNote = ett.un===DASH ? "Not listed for this age" : (hasCuffed ? "Newborns, or if a cuffed tube won't pass" : "First choice under 3 kg");
     $("ettOut").innerHTML='<div class="readout">'+
-      '<div class="primary"><div class="k">Microcuff</div><div class="v">'+esc(ett.mc.replace("*",""))+(mcStar?'<span class="star">*</span>':'')+'</div>'+(mcStar?'<div class="n"><span class="star">*</span> Term neonates over 3 kg only</div>':(ett.mc===DASH?'<div class="n">Not listed</div>':''))+'</div>'+
-      '<div><div class="k">Uncuffed</div><div class="v'+(ett.un.length>3?' long':'')+'">'+esc(ett.un.replace(" – ","–"))+'</div>'+(ett.un===DASH?'<div class="n">Not listed for this age</div>':'')+'</div>'+
+      '<div'+(cuffPrimary?' class="primary"':'')+'><div class="k">Cuffed (Microcuff)</div><div class="v">'+esc(ett.mc.replace("*",""))+(mcStar?'<span class="star">*</span>':'')+'</div><div class="n">'+cuffNote+'</div></div>'+
+      '<div'+(!cuffPrimary&&ett.un!==DASH?' class="primary"':'')+'><div class="k">Uncuffed</div><div class="v'+(ett.un.length>3?' long':'')+'">'+esc(ett.un.replace(" – ","–"))+'</div><div class="n">'+unNote+'</div></div>'+
       '<div><div class="k">Oral length</div><div class="v">'+esc(ett.len)+'<small>cm</small></div></div>'+
-      '</div><div class="foot">Have half a size up and down ready.</div>';
+      '</div><div class="foot rcuk"><b>RCUK 2025:</b> use cuffed tracheal tubes for all children over 30 days corrected gestational age. Monitor and limit cuff pressure to the manufacturer\'s limit. Have half a size up and down ready.</div>';
   } else $("ettOut").innerHTML='<div class="empty">'+(infant?"Choose a weight to see tube sizes.":"Choose an age to see tube sizes.")+'</div>';
 
   // Devices
